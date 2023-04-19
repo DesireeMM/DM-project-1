@@ -24,10 +24,10 @@ def create_group(created_by, name):
 
     return group
 
-def add_availability(user, start, end):
+def add_availability(user, weekday, start, end):
     """Create and return an availability record"""
 
-    availability = Availability(user=user, start=start, end=end)
+    availability = Availability(user=user, weekday=weekday, start=start, end=end)
 
     return availability
 
@@ -64,6 +64,13 @@ def get_event_by_name(name):
 
     return Event.query.filter(Event.name == name).first()
 
+def show_user_events(user_id):
+    """Return a list of events for a user, given their id"""
+
+    user = get_user_by_id(user_id)
+
+    return user.events
+
 #querying functions for groups
 def get_groups():
     """Return a list of all groups in the database"""
@@ -81,15 +88,30 @@ def get_group_by_name(name):
 
     return Group.query.filter(Group.name == name).first()
 
+def show_user_groups(user_id):
+    """Return a list of user's groups given their user_id"""
+
+    user = get_user_by_id(user_id)
+
+    return user.groups
+
+def show_group_members(group_id):
+    """Return a list of a group's members given its group_id"""
+
+    group = get_group_by_id(group_id)
+    members = group.users
+
+    return members
+
 #querying functions for availability
 #revisit after exploring how calendar will display
-# def show_availability(user_id):
-#     """Return a list of a user's availabilities given their user_id"""
+def show_availability(user_id):
+    """Return a list of a user's availabilities given their user_id"""
 
-#     # user = User.query.get(user_id)
-#     # return user.availabilities
+    user = User.query.get(user_id)
+    return user.availabilities
 
-#     return Availability.query.filter(Availability.user_id == user_id).all()
+    # return Availability.query.filter(Availability.user_id == user_id).all()
 
 #updating functions
 def update_event(event_id, datetime, activity, description=None):

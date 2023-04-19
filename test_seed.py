@@ -3,7 +3,7 @@
 import os
 import json
 from random import choice, randint
-from datetime import datetime
+from datetime import datetime, time
 
 import crud
 import model
@@ -55,8 +55,29 @@ for user in all_users:
 
 #assign events to test users
 for user in all_users:
-    if 1 in user.groups:
-        crud.add_event(user.email, 1)
-    else:
-        crud.add_event(user.email, 2)
-        crud.add_event(user.email, 3)
+    for group in user.groups:
+        if group.group_id == 1:
+            crud.add_event(user.email, 1)
+        else:
+            crud.add_event(user.email, 2)
+            crud.add_event(user.email, 3)
+
+#adding availabilities
+weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+five_pm = time(17, 00)
+ten_pm = time(22, 00)
+six_pm = time(18, 00)
+nine30_pm = time(21, 30)
+noon = time(12, 00)
+nine_am = time(9, 00)
+four_pm = time(16, 00)
+eleven30_am = time(11, 30)
+
+start_times = [nine_am, eleven30_am, noon, four_pm]
+end_times = [five_pm, six_pm, nine30_pm, ten_pm]
+
+for user in all_users:
+    new_avail =crud.add_availability(user, choice(weekdays), choice(start_times), choice(end_times))
+    model.db.session.add(new_avail)
+    model.db.session.commit()

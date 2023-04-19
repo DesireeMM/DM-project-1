@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ group.name }} - Details {% endblock %}
+
+{% block body %}
+<h1>{{ group.name }}</h1>
+
+<p>
+    Created By: {{group.created_by}}
+</p>
+<p>
+    Members: 
+    <ul>
+        {% for user in members %}
+        <dl>{{user.fname}} {{user.lname}}</dl>
+        <dt>{{user.email}}</dt>
+        {% endfor %}
+    </ul>
+</p>
+
+
+{% endblock %}

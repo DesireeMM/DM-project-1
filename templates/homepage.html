@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}DM Project Home{% endblock %}
+
+{% block body %}
+    <h1>Welcome!</h1>
+
+    <h2>Navigation</h2>
+    <ul>
+        <!-- <li><a href="/create-account">Create a new account</a></li>
+        <li><a href="/login">Existing User Login</a></li> -->
+        <li><a href="/events">Events Page</a></li>
+        <li><a href="/groups">Groups Page</a></li>
+        <li><a href="/availability">Availability</a></li>
+    </ul>
+
+    <h2>Create an Account</h2>
+    <form action="/create-account" method="POST">
+        <p>
+            Email <input type="text" name="email" required>
+        </p>
+        <p>
+            Password <input type="text" name="password" required>
+        </p>
+        <p>
+            First Name <input type="text" name="fname" required>
+        </p>
+        <p>
+            Last Name <input type="text" name="lname" required>
+        </p>
+        <p>
+            Phone <input type="text" name="phone">
+        </p>
+        <p>
+            <input type="submit">
+        </p>
+    </form>
+    
+    <h2>Log In</h2>
+    <form action="/login" method="POST">
+        <p>
+            Email <input type="text" name="email">
+        </p>
+        <p>
+            Password <input type="text" name="password">
+        </p>
+        <p>
+            <input type="submit">
+        </p>
+    </form>
+
+{% endblock %}

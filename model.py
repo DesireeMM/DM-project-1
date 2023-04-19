@@ -76,8 +76,9 @@ class Availability(db.Model):
 
     avail_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
-    start = db.Column(db.DateTime, nullable=True)
-    end = db.Column(db.DateTime, nullable=True)
+    weekday = db.Column(db.String(15))
+    start = db.Column(db.Time, nullable=True)
+    end = db.Column(db.Time, nullable=True)
 
     #establish relationship between users and their availability
     user = db.relationship("User", back_populates="availabilities")

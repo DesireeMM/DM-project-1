@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ event.name }} - Details {% endblock %}
+
+{% block body %}
+<h1>{{ event.name }}</h1>
+
+<p>
+    Hosted By: {{event.created_by}}
+</p>
+<p>
+    Description: {{event.description}}
+</p>
+
+<p>
+    Date/Time: {{event.datetime}}
+</p>
+
+<p>
+    Activity: {{event.activity}}
+</p>
+
+{% endblock %}

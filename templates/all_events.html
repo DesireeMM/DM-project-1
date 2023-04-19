@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}All Events for {{current_user.fname}} {% endblock %}
+
+{% block body %}
+<ul>
+{% for event in all_events %}
+<li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
