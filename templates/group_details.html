@@ -17,6 +17,13 @@
         {% endfor %}
     </ul>
 </p>
-
+<p>
+    <form action="/new-group-member", method="POST">
+    Add a new member to this group:
+    <input type="text" name="user_email">
+    <input type="hidden" name="group_id" value="{{group.group_id}}">
+    <button type="submit">Add</button>
+    </form>
+</p>
 
 {% endblock %}

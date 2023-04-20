@@ -7,7 +7,8 @@
     <h2>View Availability</h2>
     {% for availability in availabilities %}
         <dl>{{availability.weekday}}</dl>
-        <dt>{{availability.start}} to {{availability.end}}</dt>
+        <dt id="avail_{{availability.avail_id}}">{{availability.start}} to {{availability.end}}</dt>
+        <button class="update-avail" id="{{availability.avail_id}}">Make changes to this availability.</button>
     {% endfor %}
 
 
@@ -34,10 +35,5 @@
         </legend>
         <button type="submit">Add Availability</button>
     </form>
-    
-    
-    
-
-    <a href="/update-availability">Need to make changes?</a>
-
+    <script src="/static/js/updateAvailability.js"></script>
 {% endblock %}

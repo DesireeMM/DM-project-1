@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Create a new event!{% endblock %}
+
+{% block body %}
+<form action="/add-event" method="POST">
+    <label for="group-select">Which group is this for?</label>
+    <select name="group" id="group-select">
+        {% for group in poss_groups %}
+        <option value="{{group.group_id}}">{{group.name}}</option>
+        {% endfor %}
+    </select>
+    <br><br>
+    Event Name:<input type="text" name="name" required>
+    <br><br>
+    Event Description:<input type="text" name="description">
+    <br><br>
+    <button type="submit">Create Event</button>
+    <br><br>
+{% endblock %}

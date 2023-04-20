@@ -25,7 +25,7 @@ def user_login():
     user_password = request.form.get("password")
 
     current_user = crud.get_user_by_email(user_email)
-    if current_user.password == user_password:
+    if current_user and current_user.password == user_password:
         session["user_id"] = current_user.user_id
         session["logged_in_email"] = current_user.email
         flash(f"Welcome, {current_user.fname}!")
@@ -78,7 +78,66 @@ def show_event(event_id):
 
     event = crud.get_event_by_id(event_id)
 
-    return render_template('event_details.html', event=event)
+    return render_template("event_details.html", event=event)
+
+@app.route('/create-event')
+def create_event():
+    """Show form for creating a new event"""
+    current_user_id = session.get("user_id")
+    poss_groups = crud.show_user_groups(current_user_id)
+
+    return render_template("create_event.html", current_user_id=current_user_id, poss_groups=poss_groups)
+
+@app.route('/add-event', methods=["POST"])
+def add_event():
+    """Add event to database"""
+    current_user_id = session.get("user_id")
+    group_id = request.form.get("group")
+    name = request.form.get("name")
+    desc = request.form.get("description")
+
+    new_event = crud.create_event(created_by=current_user_id, group_id=group_id, name=name, description=desc)
+    db.session.add(new_event)
+    db.session.commit()
+
+    event_id = new_event.event_id
+    
+    group_members = crud.show_group_members(group_id)
+    for member in group_members:
+        crud.add_event(member.email, event_id)
+
+    return redirect(f"/events/{event_id}")
+
+@app.route("/update-event/<event_id>")
+def update_event(event_id):
+    """Display form to update a particular event."""
+    target_event = crud.get_event_by_id(event_id)
+    
+    return render_template("update_event.html", event=target_event)
+
+@app.route("/event-updated", methods=["POST"])
+def show_updated_event():
+    """Show event details after updating"""
+    target_event_id = request.form.get("event_id")
+    target_event = crud.get_event_by_id(target_event_id)
+    name = request.form.get("new-name")
+    desc = request.form.get("new-desc")
+    activity = request.form.get("activity")
+    date = request.form.get("date")
+    time = request.form.get("time")
+
+    if not name:
+        name = target_event.name
+    if not desc:
+        desc = target_event.description
+    if not activity:
+        activity = target_event.activity
+    
+    datetime = date + " " + time
+
+    crud.update_event(target_event_id, name=name, datetime=datetime, activity=activity, description=desc)
+
+    return redirect(f"/events/{target_event_id}")
 
 @app.route("/groups")
 def view_groups():
@@ -97,7 +156,7 @@ def view_groups():
 
     return render_template("all_groups.html", all_groups=all_groups, current_user=current_user)
 
-@app.route('/groups/<group_id>')
+@app.route("/groups/<group_id>")
 def show_group(group_id):
     """Show details for a particular group"""
 
@@ -105,6 +164,26 @@ def show_group(group_id):
     members = crud.show_group_members(group_id)
 
     return render_template('group_details.html', group=group, members=members)
+
+@app.route("/new-group-member", methods=["POST"])
+def add_member():
+    """Handle adding a new member to a group."""
+
+    group_id = request.form.get("group_id")
+    user_email = request.form.get("user_email")
+    new_member = crud.get_user_by_email(user_email)
+    all_users = crud.get_users()
+    group_members = crud.show_group_members(group_id)
+
+    if new_member in group_members:
+        flash("Member already in group.")
+    elif new_member in all_users:
+        crud.add_user(user_email, group_id)
+        flash("New member added successfully.")
+    else:
+        flash("User not found. Please make sure to enter a valid email address.")
+        
+    return redirect(f"/groups/{group_id}")
 
 @app.route("/availability")
 def view_availability():
@@ -137,7 +216,20 @@ def add_availability():
 
     return redirect("/availability")
 
+@app.route("/update-availability", methods=["POST"])
+def update_availability():
+    """Update a user's availability"""
 
+    avail_id = request.json["avail_id"]
+    new_start = request.json["new_start"]
+    new_end = request.json["new_end"]
+
+    crud.update_availability(avail_id, new_start, new_end)
+
+    return {
+        "success": True,
+        "status": "You have updated your availability."
+    }
 
 @app.route("/logout")
 def user_logout():

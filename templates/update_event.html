@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ event.name }} - Update Details {% endblock %}
+
+{% block body %}
+<h1>{{ event.name }}</h1>
+
+<form action="/event-updated" method="POST">
+    <input type="hidden" name="event_id" value="{{event.event_id}}">
+Name:<input type="text" name="new-name">
+<br><br>
+Description: <input type="text" name="new-desc">
+<br><br>
+Activity: <input type="text" name="activity">
+<br><br>
+Date: <input type="date" name="date">
+<br><br>
+Time: <input type="time" name="time">
+<br><br>
+<button type="submit">Make Changes</button>
+</form>
+
+{% endblock %}

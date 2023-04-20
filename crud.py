@@ -114,10 +114,11 @@ def show_availability(user_id):
     # return Availability.query.filter(Availability.user_id == user_id).all()
 
 #updating functions
-def update_event(event_id, datetime, activity, description=None):
+def update_event(event_id, name, datetime, activity, description=None):
     """Update an event given its id"""
 
     target_event = Event.query.get(event_id)
+    target_event.name = name
     target_event.datetime = datetime
     target_event.activity = activity
     target_event.description = description
