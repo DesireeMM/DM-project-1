@@ -55,6 +55,15 @@ def create_new_account():
 
     return redirect("/")
 
+@app.route("/dashboard")
+def view_dashboard():
+    """View User Dashboard"""
+    current_user_id = session.get("user_id")
+    current_user = crud.get_user_by_id(current_user_id)
+
+    return render_template("dashboard.html",
+                           current_user=current_user)
+
 @app.route("/events")
 def view_events():
     """View a user's scheduled events"""
@@ -114,6 +123,11 @@ def add_event():
         crud.add_event(member.email, event_id)
 
     return redirect(f"/events/{event_id}")
+
+@app.route("/events-personal")
+def view_personal_calendar():
+    """Display a user's personal event calendar"""
+    pass
 
 @app.route("/update-event/<event_id>")
 def update_event(event_id):
@@ -188,6 +202,44 @@ def show_group(group_id):
     members = crud.show_group_members(group_id)
 
     return render_template('group_details.html', group=group, members=members)
+
+@app.route("/create-group")
+def create_group():
+    """Show form for creating a new group"""
+    current_user_id = session.get("user_id")
+
+    return render_template("create_group.html",
+                           current_user_id=current_user_id)
+
+@app.route("/add-group", methods=["POST"])
+def add_group():
+    """Add group to database"""
+    current_user_id = session.get("user_id")
+    current_email = session.get("logged_in_email")
+    group_name = request.json.get("group_name")
+    group_members = request.json.get("group_members")
+
+    new_group = crud.create_group(created_by=current_user_id,
+                                  name=group_name)
+    
+    db.session.add(new_group)
+    db.session.commit()
+    
+    group_id = new_group.group_id
+    crud.add_user(current_email, group_id)
+
+    for email in group_members:
+        member = crud.get_user_by_email(email)
+        if not member:
+            flash(f"{email} could not be added.")
+        else:
+            crud.add_user(email, group_id)
+            flash(f"{email} was added to {new_group.name}")
+    return {
+        "success": True,
+        "status": "Successfully formed group!",
+        "redirect": f"/groups/{group_id}"
+    }
 
 @app.route("/new-group-member", methods=["POST"])
 def add_member():

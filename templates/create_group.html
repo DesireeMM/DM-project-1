@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Create a new event!{% endblock %}
+
+{% block body %}
+<form action="/add-group" method="POST">
+    <p>
+    Group Name:<input type="text" name="name-field" id="name-field" required>
+    </p>
+    <br><br>
+    <ul id="members">
+        <button id="add-more-members">Add another member.</button>
+    </ul>
+    <button type="button" id="new-group-submit">Create Group</button>
+    <br><br>
+</form>
+
+{% endblock %}
+{% block after_body %}
+<script src="/static/js/createGroup.js"></script>
+{% endblock %}
