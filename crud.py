@@ -1,6 +1,14 @@
 """CRUD operations"""
 
-from model import db, User, Event, Group, Availability, UserGroup, UserEvent, connect_to_db
+from model import (db,
+                   User,
+                   Event,
+                   Group,
+                   Availability,
+                   UserGroup,
+                   UserEvent,
+                   connect_to_db)
+from datetime import timedelta, datetime, date
 
 #creation functions
 def create_user(fname, lname, email, password, phone=None):
@@ -13,7 +21,12 @@ def create_user(fname, lname, email, password, phone=None):
 def create_event(created_by, group_id, name, datetime=None, activity=None, description=None):
     """Create and return a new event"""
 
-    event = Event(created_by=created_by, group_id=group_id, name=name, datetime=datetime, activity=activity, description=description)
+    event = Event(created_by=created_by,
+                  group_id=group_id,
+                  name=name,
+                  datetime=datetime,
+                  activity=activity,
+                  description=description)
 
     return event
 
@@ -151,6 +164,106 @@ def add_event(email, event_id):
 
     user.events.append(event)
     db.session.commit()
+
+#main availability calculator functions
+def create_availability_ref(group_id):
+    """Create a dictionary to hold availabilities of group members given the group id"""
+
+    #first, get all group members
+    all_members = show_group_members(group_id)
+
+    #make a dictionary for member availabilities:
+    availabilities = {}
+
+    #loop through members to populate dictionary
+    for member in all_members:
+        for availability in member.availabilities:
+            if availability.weekday not in availabilities:
+                availabilities[availability.weekday] = {member.fname: (availability.start, availability.end)}
+            else:
+                availabilities[availability.weekday].update({member.fname:(availability.start, availability.end)})
+
+    #at this point i have a dictionary
+    #dictionary has the days of the week containing another dictionary
+    #nested dictionary has key = member name and value = start and end times as a tuple
+    return availabilities
+
+#need to find best day and time
+def get_best_weekday(availabilities):
+    """Return the weekday that has the most members available"""
+    longest_so_far = None
+    for key, value in availabilities.items():
+        if longest_so_far is None or len(value) > longest_so_far:
+            longest_so_far = len(value)
+            best_weekday = key
+    
+    return best_weekday
+
+def get_time_range_loop(availabilities, weekday):
+    """Given the day of the week, find the earliest start time and latest end time.
+    We need these times for our for loop determining best time range."""
+
+    records = availabilities[weekday]
+
+    attendees = records.keys()
+
+    poss_start_times = []
+    poss_end_times = []
+
+    for record in records.values():
+        poss_start_times.append(record[0])
+        poss_end_times.append(record[1])
+
+    start_time = min(poss_start_times)
+    end_time = max(poss_end_times)
+
+    return attendees, start_time, end_time
+#now we have a list of possible attendees, the earliest possible start time, and the latest possible end time
+
+def add_time(time1, delta):
+    """Function used to convert a time object to a datetime object.
+    Necessary to add a time object and a timedelta object."""
+    
+    new_dt = datetime.combine(date.today(), time1) + delta
+    return new_dt.time()
+
+def get_best_range(availabilities, weekday, start_time, end_time):
+    """Given a dictionary of availabilities, return a time range where most people are available"""
+    records = availabilities[weekday]
+
+    #create an empty dictionary to hold times:number of people available
+    time_range_dict = {}
+    #we'll want to loop through in 30 min increments
+    interval = timedelta(minutes=30)
+    loop_start_time = start_time
+
+    #starting from the earliest start time and going to the latest end time
+    while loop_start_time < end_time:
+    #for each of those times, determine how many people are available at those times
+        for times in records.values():
+            if times[0] <= loop_start_time <= times[1]:
+                #add a key:value pair to the dictionary
+                time_range_dict[loop_start_time] = time_range_dict.get(loop_start_time, 0) + 1
+            else:
+                continue
+        loop_start_time = add_time(loop_start_time, interval)
+#now we have a dictionary where keys are the 30-min interval times and values are the number of people available
+#then we can get the max of the values
+    max_people = max(time_range_dict.values())
+#loop through key:value pairs
+    ideal_range = []
+#until you find the max value -- this will be beginning of ideal range
+    for key, value in time_range_dict.items():
+        if value == max_people:
+            ideal_range.append(key)
+        else:
+            continue
+#keep going as long as you see that max value
+    best_start_time = min(ideal_range)
+    best_end_time = max(ideal_range)
+
+    return best_start_time, best_end_time
+
 
 if __name__ == "__main__":
     from server import app

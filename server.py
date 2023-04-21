@@ -46,7 +46,7 @@ def create_new_account():
 
     if crud.get_user_by_email(user_email):
         flash("Email already taken. Please try again.")
-        
+
     else:
         new_user = crud.create_user(user_fname, user_lname, user_email, user_password, user_phone)
         db.session.add(new_user)
@@ -77,8 +77,10 @@ def show_event(event_id):
     """Show details for a particular event"""
 
     event = crud.get_event_by_id(event_id)
+    group = crud.get_group_by_id(event.group_id)
+    group_name = group.name
 
-    return render_template("event_details.html", event=event)
+    return render_template("event_details.html", event=event, group_name=group_name)
 
 @app.route('/create-event')
 def create_event():
@@ -86,7 +88,9 @@ def create_event():
     current_user_id = session.get("user_id")
     poss_groups = crud.show_user_groups(current_user_id)
 
-    return render_template("create_event.html", current_user_id=current_user_id, poss_groups=poss_groups)
+    return render_template("create_event.html",
+                           current_user_id=current_user_id,
+                           poss_groups=poss_groups)
 
 @app.route('/add-event', methods=["POST"])
 def add_event():
@@ -96,12 +100,15 @@ def add_event():
     name = request.form.get("name")
     desc = request.form.get("description")
 
-    new_event = crud.create_event(created_by=current_user_id, group_id=group_id, name=name, description=desc)
+    new_event = crud.create_event(created_by=current_user_id,
+                                  group_id=group_id,
+                                  name=name,
+                                  description=desc)
     db.session.add(new_event)
     db.session.commit()
 
     event_id = new_event.event_id
-    
+
     group_members = crud.show_group_members(group_id)
     for member in group_members:
         crud.add_event(member.email, event_id)
@@ -112,8 +119,19 @@ def add_event():
 def update_event(event_id):
     """Display form to update a particular event."""
     target_event = crud.get_event_by_id(event_id)
-    
-    return render_template("update_event.html", event=target_event)
+    group_id = target_event.group_id
+    availabilities = crud.create_availability_ref(group_id)
+    best_day = crud.get_best_weekday(availabilities)
+    attendees, start_time, end_time = crud.get_time_range_loop(availabilities, best_day)
+    best_start_time, best_end_time = crud.get_best_range(availabilities, best_day, start_time, end_time)
+
+    return render_template("update_event.html",
+                           event=target_event,
+                           availabilities=availabilities,
+                           best_day=best_day,
+                           attendees=attendees,
+                           start_time=best_start_time,
+                           end_time=best_end_time)
 
 @app.route("/event-updated", methods=["POST"])
 def show_updated_event():
@@ -132,10 +150,14 @@ def show_updated_event():
         desc = target_event.description
     if not activity:
         activity = target_event.activity
-    
+
     datetime = date + " " + time
 
-    crud.update_event(target_event_id, name=name, datetime=datetime, activity=activity, description=desc)
+    crud.update_event(target_event_id,
+                      name=name,
+                      datetime=datetime,
+                      activity=activity,
+                      description=desc)
 
     return redirect(f"/events/{target_event_id}")
 
@@ -154,7 +176,9 @@ def view_groups():
         all_groups = crud.show_user_groups(current_user_id)
 
 
-    return render_template("all_groups.html", all_groups=all_groups, current_user=current_user)
+    return render_template("all_groups.html",
+                           all_groups=all_groups,
+                           current_user=current_user)
 
 @app.route("/groups/<group_id>")
 def show_group(group_id):
@@ -182,7 +206,7 @@ def add_member():
         flash("New member added successfully.")
     else:
         flash("User not found. Please make sure to enter a valid email address.")
-        
+
     return redirect(f"/groups/{group_id}")
 
 @app.route("/availability")
@@ -198,7 +222,9 @@ def view_availability():
         flash("You must log in to view availability.")
         return redirect("/")
     else:
-        return render_template("availability.html", current_user=current_user, availabilities=availabilities)
+        return render_template("availability.html",
+                               current_user=current_user,
+                               availabilities=availabilities)
 
 @app.route("/add-availability", methods=["POST"])
 def add_availability():
