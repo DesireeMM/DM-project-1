@@ -3,16 +3,7 @@
 
 {% block body %}
     <h1>Welcome!</h1>
-
-    <h2>Navigation</h2>
-    <ul>
-        <!-- <li><a href="/create-account">Create a new account</a></li>
-        <li><a href="/login">Existing User Login</a></li> -->
-        <li><a href="/events">Events Page</a></li>
-        <li><a href="/groups">Groups Page</a></li>
-        <li><a href="/availability">Availability</a></li>
-    </ul>
-
+    <div class="container">
     <h2>Create an Account</h2>
     <form action="/create-account" method="POST">
         <p>
@@ -34,7 +25,8 @@
             <input type="submit">
         </p>
     </form>
-    
+    </div>
+    <div class="container">
     <h2>Log In</h2>
     <form action="/login" method="POST">
         <p>
@@ -47,5 +39,5 @@
             <input type="submit">
         </p>
     </form>
-
+    </div>
 {% endblock %}

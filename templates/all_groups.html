@@ -2,9 +2,12 @@
 {% block title %}All Groups for {{current_user.fname}} {% endblock %}
 
 {% block body %}
+<div class="container">
+<h1>My Groups</h1>
 <ul>
 {% for group in all_groups %}
 <li><a href="/groups/{{ group.group_id }}">{{ group.name }}</a></li>
 {% endfor %}
 </ul>
+</div>
 {% endblock %}

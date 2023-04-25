@@ -18,11 +18,11 @@ class User(db.Model):
     password = db.Column(db.String(250), nullable=False)
 
     #establish relationships between users and events, users and groups
-    events = db.relationship("Event", secondary="users_events", back_populates="users")
+    events = db.relationship("Event", secondary="users_events", order_by="Event.datetime", back_populates="users")
     groups = db.relationship("Group", secondary="users_groups", back_populates="users")
 
     #establish relationship between user and their availability
-    availabilities = db.relationship("Availability", back_populates="user")
+    availabilities = db.relationship("Availability", order_by="Availability.weekday", back_populates="user")
 
     def __repr__(self):
 

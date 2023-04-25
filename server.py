@@ -3,6 +3,7 @@
 from flask import (Flask, render_template, request, flash, session, redirect)
 from model import connect_to_db, db
 import crud
+from datetime import datetime
 
 from jinja2 import StrictUndefined
 
@@ -71,6 +72,7 @@ def view_events():
     logged_in_email = session.get("logged_in_email")
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
+    current_datetime = datetime.now()
 
     if logged_in_email is None:
         flash("You must log in to view events.")
@@ -79,7 +81,10 @@ def view_events():
         all_events = crud.show_user_events(current_user_id)
 
 
-    return render_template("all_events.html", all_events=all_events, current_user=current_user)
+    return render_template("all_events.html",
+                           all_events=all_events,
+                           current_user=current_user,
+                           current_datetime=current_datetime)
 
 @app.route('/events/<event_id>')
 def show_event(event_id):
@@ -88,8 +93,12 @@ def show_event(event_id):
     event = crud.get_event_by_id(event_id)
     group = crud.get_group_by_id(event.group_id)
     group_name = group.name
+    event_host = crud.get_user_by_id(event.created_by)
 
-    return render_template("event_details.html", event=event, group_name=group_name)
+    return render_template("event_details.html",
+                           event=event,
+                           group_name=group_name,
+                           event_host=event_host)
 
 @app.route('/create-event')
 def create_event():
@@ -127,7 +136,8 @@ def add_event():
 @app.route("/events-personal")
 def view_personal_calendar():
     """Display a user's personal event calendar"""
-    pass
+    
+    return render_template("calendar.html")
 
 @app.route("/update-event/<event_id>")
 def update_event(event_id):
@@ -200,8 +210,23 @@ def show_group(group_id):
 
     group = crud.get_group_by_id(group_id)
     members = crud.show_group_members(group_id)
+    group_creator = crud.get_user_by_id(group.created_by)
 
-    return render_template('group_details.html', group=group, members=members)
+    return render_template('group_details.html',
+                           group=group,
+                           members=members,
+                           group_creator=group_creator)
+
+@app.route("/groups/<group_id>/availability")
+def show_group_availability(group_id):
+    """Show availability details for a particular group"""
+
+    group = crud.get_group_by_id(group_id)
+    members = crud.show_group_members(group_id)
+
+    return render_template('group_avail_details.html',
+                           group=group,
+                           members=members)
 
 @app.route("/create-group")
 def create_group():

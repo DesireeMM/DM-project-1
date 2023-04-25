@@ -3,10 +3,11 @@
 {% block title %} {{ group.name }} - Details {% endblock %}
 
 {% block body %}
+<div class="container">
 <h1>{{ group.name }}</h1>
 
 <p>
-    Created By: {{group.created_by}}
+    Created By: {{group_creator.fname}} {{group_creator.lname}}
 </p>
 <p>
     Members: 
@@ -25,5 +26,8 @@
     <button type="submit">Add</button>
     </form>
 </p>
-
+<p>
+    <a href="/groups/{{group.group_id}}/availability">See this group's availability.</a>
+</p>
+</div>
 {% endblock %}

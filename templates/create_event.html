@@ -2,6 +2,9 @@
 {% block title %}Create a new event!{% endblock %}
 
 {% block body %}
+<div class="container">
+<h1>Create a new event:</h1>
+<div class="container">
 <form action="/add-event" method="POST">
     <label for="group-select">Which group is this for?</label>
     <select name="group" id="group-select">
@@ -15,6 +18,7 @@
     Event Description:<input type="text" name="description">
     <br><br>
     <button type="submit">Create Event</button>
-    <br><br>
-    </form>
+</form>
+</div>
+</div>
 {% endblock %}

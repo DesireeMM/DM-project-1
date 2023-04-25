@@ -29,8 +29,9 @@ model.db.session.commit()
 #create some groups
 group1 = crud.create_group(1, "Test_Group_1")
 group2 = crud.create_group(2, "Test_Group_2")
+group3 = crud.create_group(5, "Test_Group_3")
 
-model.db.session.add_all([group1, group2])
+model.db.session.add_all([group1, group2, group3])
 model.db.session.commit()
 
 
@@ -39,8 +40,9 @@ model.db.session.commit()
 event1 = crud.create_event(1, 1, "Test_Event_1")
 event2 = crud.create_event(2, 2, "Test_Event_2")
 event3 = crud.create_event(5, 2, "Test_Event_3")
+event4 = crud.create_event(5, 3, "Test_Event_4")
 
-model.db.session.add_all([event1, event2, event3])
+model.db.session.add_all([event1, event2, event3, event4])
 model.db.session.commit()
 
 
@@ -50,17 +52,21 @@ all_users = crud.get_users()
 for user in all_users:
     if user.user_id <= 5:
         crud.add_user(user.email, 1)
-    else:
+    if user.user_id > 5:
         crud.add_user(user.email, 2)
+    if 3 < user.user_id <= 8:
+        crud.add_user(user.email, 3)
 
 #assign events to test users
 for user in all_users:
     for group in user.groups:
         if group.group_id == 1:
             crud.add_event(user.email, 1)
-        else:
+        if group.group_id == 2:
             crud.add_event(user.email, 2)
             crud.add_event(user.email, 3)
+        if group.group_id == 3:
+            crud.add_event(user.email, 4)
 
 #adding availabilities
 weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -77,7 +83,10 @@ eleven30_am = time(11, 30)
 start_times = [nine_am, eleven30_am, noon, four_pm]
 end_times = [five_pm, six_pm, nine30_pm, ten_pm]
 
-for user in all_users:
-    new_avail =crud.add_availability(user, choice(weekdays), choice(start_times), choice(end_times))
-    model.db.session.add(new_avail)
-    model.db.session.commit()
+i = 0
+while i < 3:
+    for user in all_users:
+        new_avail =crud.add_availability(user, choice(weekdays), choice(start_times), choice(end_times))
+        model.db.session.add(new_avail)
+        model.db.session.commit()
+    i += 1

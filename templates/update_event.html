@@ -3,8 +3,9 @@
 {% block title %} {{ event.name }} - Update Details {% endblock %}
 
 {% block body %}
+<div class="container">
 <h1>{{ event.name }}</h1>
-
+<div class="container">
 <form action="/event-updated" method="POST">
     <input type="hidden" name="event_id" value="{{event.event_id}}">
 Name:<input type="text" name="new-name">
@@ -19,7 +20,8 @@ Time: <input type="time" name="time">
 <br><br>
 <button type="submit">Make Changes</button>
 </form>
-
+</div>
+<div class="container">
 <h2>Group Availability Reference</h2>
 {% for weekday, members in availabilities.items() %}
 <dt>{{ weekday }}:</dt>
@@ -27,14 +29,18 @@ Time: <input type="time" name="time">
 <dd>{{member}}: {{times[0]}} to {{times[1]}}</dd>
 {% endfor %}
 {% endfor %}
-
+</div>
+<div class="container">
 <h2>Best Day and Time</h2>
 <p>From {{start_time}} to {{end_time}} on {{best_day}}</p>
-<p>Works for: <ul>
+<p>Works for:
+    <ul>
     {% for attendee in attendees %}
     <li>{{attendee}}</li>
     {% endfor %}
-</ul></p>
-
+    </ul>
+</p>
+</div>
+</div>
 
 {% endblock %}
