@@ -84,6 +84,11 @@ def show_user_events(user_id):
 
     return user.events
 
+def show_hosted_events(user_id):
+    """Return a list of events hosted by a user, given their user_id"""
+
+    return Event.query.filter(Event.created_by == user_id).all()
+
 #querying functions for groups
 def get_groups():
     """Return a list of all groups in the database"""

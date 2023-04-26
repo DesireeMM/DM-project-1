@@ -4,28 +4,29 @@
 {% block body %}
     <h1>Welcome {{current_user.fname}}!</h1>
     <div class="container">
-    <h2>My Events</h2>
-    <ul>
-    {% for event in current_user.events %}
-        <li><a href="/events/{{event.event_id}}">{{event.name}}</a></li>
-    {% endfor %}
-    </ul>
-    </div>
-    <div class="container">
-    <h2>My Groups</h2>
-    <ul>
-    {% for group in current_user.groups %}
-        <li><a href="/groups/{{group.group_id}}">{{group.name}}</a></li>
-    {% endfor %}
-    </ul>
-    </div>
-    <div class="container">
-    <h2>My Availability</h2>
-
-    {% for availability in current_user.availabilities %}
-        <dl>{{availability.weekday}}</dl>
-        <dt id="avail_{{availability.avail_id}}">{{availability.start}} to {{availability.end}}</dt>
-        <button class="update-avail" id="{{availability.avail_id}}">Make changes to this availability.</button>
-    {% endfor %}
+        <div class="col">
+            <h2>My Events</h2>
+                <ul>
+                {% for event in current_user.events %}
+                    <li><a href="/events/{{event.event_id}}">{{event.name}}</a></li>
+                {% endfor %}
+                </ul>
+        </div>
+        <div class="col">
+            <h2>My Groups</h2>
+            <ul>
+                {% for group in current_user.groups %}
+                <li><a href="/groups/{{group.group_id}}">{{group.name}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col">
+            <h2>My Availability</h2>
+                {% for availability in current_user.availabilities %}
+                    <dl>{{availability.weekday}}</dl>
+                    <dt id="avail_{{availability.avail_id}}">{{availability.start}} to {{availability.end}}</dt>
+                    <button class="update-avail" id="{{availability.avail_id}}">Make changes to this availability.</button>
+                {% endfor %}
+        </div>
     </div>
 {% endblock %}

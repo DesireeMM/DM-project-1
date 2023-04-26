@@ -4,18 +4,22 @@
 
 {% block body %}
 <div class="container">
-<h1>{{ group.name }}</h1>
-<p>
-    Created By: {{group.created_by}}
-</p>
-<div class="container">
-<h2>Availability</h2>
-{% for member in members %}
-<dt>{{member.fname}}</dt>
-{% for availability in member.availabilities %}
-<dd>{{availability.weekday}}: {{availability.start}} to {{availability.end}}</dd>
-{% endfor %}
-{% endfor %}
-</div>
+    <div class="row">
+        <div class="col">
+            <h1>{{ group.name }}</h1>
+            <p>
+                Created By: {{group.created_by}}
+            </p>
+        </div>
+        <div class="col">
+            <h2>Availability</h2>
+                {% for member in members %}
+                    <dt>{{member.fname}}</dt>
+                    {% for availability in member.availabilities %}
+                        <dd>{{availability.weekday}}: {{availability.start}} to {{availability.end}}</dd>
+                    {% endfor %}
+                {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock %}

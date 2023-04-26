@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Send out an update!{% endblock %}
+
+{% block body %}
+<div class="container">
+<h1>Send out an event update:</h1>
+<div class="container">
+<form action="/send-update" method="POST">
+    <label for="event-select">Which group is this for?</label>
+    <select name="event" id="event-select">
+        {% for event in poss_events %}
+        <option value="{{event.event_id}}">{{event.name}}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" id="event-updater">Send Notification</button>
+</form>
+</div>
+</div>
+{% endblock %}
+{% block after_body %}
+{% endblock %}

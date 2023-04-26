@@ -3,31 +3,36 @@
 {% block title %} {{ group.name }} - Details {% endblock %}
 
 {% block body %}
-<div class="container">
-<h1>{{ group.name }}</h1>
-
-<p>
-    Created By: {{group_creator.fname}} {{group_creator.lname}}
-</p>
-<p>
-    Members: 
-    <ul>
-        {% for user in members %}
-        <dl>{{user.fname}} {{user.lname}}</dl>
-        <dt>{{user.email}}</dt>
-        {% endfor %}
-    </ul>
-</p>
-<p>
-    <form action="/new-group-member", method="POST">
-    Add a new member to this group:
-    <input type="text" name="user_email">
-    <input type="hidden" name="group_id" value="{{group.group_id}}">
-    <button type="submit">Add</button>
-    </form>
-</p>
-<p>
-    <a href="/groups/{{group.group_id}}/availability">See this group's availability.</a>
-</p>
+<div class="container-fluid">
+    <div class="row">
+    <h1>{{ group.name }}</h1>
+        <div class="col">
+            <p>
+                Created By: {{group_creator.fname}} {{group_creator.lname}}
+            </p>
+        </div>
+        <div class="col">
+            <p>
+                Members: 
+                <ul>
+                    {% for user in members %}
+                        <dl>{{user.fname}} {{user.lname}}</dl>
+                        <dt>{{user.email}}</dt>
+                    {% endfor %}
+                </ul>
+            </p>
+            <p>
+                <form action="/new-group-member", method="POST">
+                    Add a new member to this group:
+                    <input type="text" name="user_email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
+                    <input type="hidden" name="group_id" value="{{group.group_id}}">
+                    <button type="submit">Add</button>
+                </form>
+            </p>
+        </div>
+    <p>
+        <a href="/groups/{{group.group_id}}/availability">See this group's availability.</a>
+    </p>
+    </div>
 </div>
 {% endblock %}

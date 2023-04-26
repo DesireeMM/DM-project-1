@@ -3,25 +3,30 @@
 {% block title %} {{ event.name }} - Details {% endblock %}
 
 {% block body %}
-<h1>{{ event.name }}</h1>
-
-<p>
-Hosted By: {{event_host.fname}} {{event_host.lname}}
-</p>
-<p>
-    For: {{group_name}}
-</p>
-<p>
-    Description: {{event.description}}
-</p>
-
-<p>
-    Date/Time: {{event.datetime}}
-</p>
-
-<p>
-    Activity: {{event.activity}}
-</p>
-<a href="/update-event/{{event.event_id}}">Update this event</a>
+<div class="container-fluid">
+    <div class="row">
+        <h1>{{ event.name }}</h1>
+        <div class="col">
+            <p>
+                Hosted By: {{event_host.fname}} {{event_host.lname}}
+            </p>
+            <p>
+                For: {{group_name}}
+            </p>
+            <p>
+                Description: {{event.description}}
+            </p>      
+            <p>
+                Date/Time: {{event.datetime}}
+            </p>
+            <p>
+                Activity: {{event.activity}}
+            </p>
+        </div>
+        <a href="/update-event/{{event.event_id}}">Update this event</a>
+        <br><br>
+        <a href="/send-event-update">Notify members about this event</a>
+    </div>
+</div>
 
 {% endblock %}

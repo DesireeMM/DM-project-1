@@ -3,7 +3,7 @@ const newMemberButton = document.querySelector('#add-more-members');
 const addMemberInput = (evt) => { 
     evt.preventDefault();
     const memberList = document.querySelector('#members');
-    memberList.insertAdjacentHTML('beforeend', '<li>Member email: <input type="text" class="members"></li>');
+    memberList.insertAdjacentHTML('beforeend', '<li>Member email: <input type="text" class="members" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"></li>');
 }
 
 newMemberButton.addEventListener('click', addMemberInput);

@@ -1,9 +1,11 @@
 """Server for my app"""
 
+import smtplib
+import os
+from datetime import datetime
 from flask import (Flask, render_template, request, flash, session, redirect)
 from model import connect_to_db, db
 import crud
-from datetime import datetime
 
 from jinja2 import StrictUndefined
 
@@ -30,11 +32,11 @@ def user_login():
         session["user_id"] = current_user.user_id
         session["logged_in_email"] = current_user.email
         flash(f"Welcome, {current_user.fname}!")
+        return redirect("/dashboard")
 
     else:
         flash("Password incorrect. Please try again.")
-
-    return redirect("/")
+        return redirect("/")
 
 @app.route("/create-account", methods=["POST"])
 def create_new_account():
@@ -175,15 +177,48 @@ def show_updated_event():
     if not activity:
         activity = target_event.activity
 
-    datetime = date + " " + time
+    event_datetime = date + " " + time
 
     crud.update_event(target_event_id,
                       name=name,
-                      datetime=datetime,
+                      datetime=event_datetime,
                       activity=activity,
                       description=desc)
 
     return redirect(f"/events/{target_event_id}")
+
+@app.route("/send-event-update")
+def send_event_update():
+    """Display form to send out a notification"""
+    current_user_id = session.get("user_id")
+    poss_events = crud.show_hosted_events(current_user_id)
+
+
+    return render_template("send_update.html",
+                           poss_events=poss_events)
+
+@app.route("/send-update", methods=["POST"])
+def send_update_email():
+    """Handle sending an update email"""
+
+    event_id = request.form.get("event")
+    
+    current_event = crud.get_event_by_id(event_id)
+
+    recipients = []
+    for user in current_event.users:
+        recipients.append(user.email)
+
+    sender_email = "whentochill@gmail.com"
+    my_password = os.environ['GMAIL_PASSWORD']
+    message = "Trying this"
+    context = smtplib.ssl.create_default_context()
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+        connection.starttls(context=context)
+        connection.login(sender_email, my_password)
+        connection.sendmail(sender_email, sender_email, message)
+
 
 @app.route("/groups")
 def view_groups():

@@ -2,35 +2,37 @@
 {% block title %}All Events for {{current_user.fname}} {% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="container">
-    <h2>Upcoming Events</h2>
-    <ul>
-    {% for event in all_events %}
-    {% if event.datetime and event.datetime > current_datetime %}
-    <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
-    {% endif %}
-    {% endfor %}
-    </div>
-    <div class="container">
-    <h2>Events Not Yet Scheduled</h2>
-    <ul>
-    {% for event in all_events %}
-    {% if not event.datetime %}
-    <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
-    {% endif %}
-    {% endfor %}
-    </ul>
-    </div>
-    <div class="container">
-    <h2>Past Events</h2>
-    <ul>
-    {% for event in all_events %}
-    {% if event.datetime and event.datetime < current_datetime %}
-    <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
-    {% endif %}
-    {% endfor %}
-    </ul>
+<div class="container-fluid">
+    <div class="row align-items-start">
+        <div class="col">
+            <h2>Upcoming Events</h2>
+            <ul>
+            {% for event in all_events %}
+                {% if event.datetime and event.datetime > current_datetime %}
+                <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col">
+            <h2>Events Not Yet Scheduled</h2>
+            <ul>
+            {% for event in all_events %}
+                {% if not event.datetime %}
+                <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
+        <div class="col">
+            <h2>Past Events</h2>
+            <ul>
+            {% for event in all_events %}
+                {% if event.datetime and event.datetime < current_datetime %}
+                <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
     </div>
 </div>
 {% endblock %}

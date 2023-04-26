@@ -2,41 +2,45 @@
 {% block title %}Add/View Availability{% endblock %}
 
 {% block body %}
-    <div class="container">
-    <h1>Availability</h1>
-    <div class="container">
-    <h2>View Availability</h2>
-    {% for availability in availabilities %}
-        <dl>{{availability.weekday}}</dl>
-        <dt id="avail_{{availability.avail_id}}">{{availability.start}} to {{availability.end}}</dt>
-        <button class="update-avail" id="{{availability.avail_id}}">Make changes to this availability.</button>
-    {% endfor %}
-    </div>
-    <div class="container">
-    <h2>Add New Availability</h2>
-    <form action="/add-availability" method="POST">
-        <label for="weekday-select">Select a day of the week:</label>
-        <select name="weekday" id="weekday-select">
-            <option value="monday">Monday</option>
-            <option value="tuesday">Tuesday</option>
-            <option value="wednesday">Wednesday</option>
-            <option value="thursday">Thursday</option>
-            <option value="friday">Friday</option>
-            <option value="saturday">Saturday</option>
-            <option value="sunday">Sunday</option>
-        </select>
-        <br><br>
-        <legend>
-            Select Start Time:
-            <input type="time" name="start-time">
-        </legend>
-        <legend>
-            Select End Time:
-            <input type="time" name="end-time">
-        </legend>
-        <button type="submit">Add Availability</button>
-    </form>
-    </div>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <h1>Availability</h1>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h2>View Availability</h2>
+                {% for availability in availabilities %}
+                    <dl>{{availability.weekday}}</dl>
+                    <dt id="avail_{{availability.avail_id}}">{{availability.start}} to {{availability.end}}</dt>
+                    <button class="update-avail" id="{{availability.avail_id}}">Make changes to this availability.</button>
+                {% endfor %}
+            </div>
+            <div class="col">
+                <h2>Add New Availability</h2>
+                <form action="/add-availability" method="POST">
+                    <label for="weekday-select">Select a day of the week:</label>
+                    <select name="weekday" id="weekday-select">
+                        <option value="monday">Monday</option>
+                        <option value="tuesday">Tuesday</option>
+                        <option value="wednesday">Wednesday</option>
+                        <option value="thursday">Thursday</option>
+                        <option value="friday">Friday</option>
+                        <option value="saturday">Saturday</option>
+                        <option value="sunday">Sunday</option>
+                    </select>
+                    <br><br>
+                    <legend>
+                        Select Start Time:
+                        <input type="time" name="start-time">
+                    </legend>
+                    <legend>
+                        Select End Time:
+                        <input type="time" name="end-time">
+                    </legend>
+                    <button type="submit">Add Availability</button>
+                </form>
+            </div>
+        </div>
     </div>
     <script src="/static/js/updateAvailability.js"></script>
 {% endblock %}
