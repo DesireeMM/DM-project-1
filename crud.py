@@ -5,6 +5,7 @@ from model import (db,
                    Event,
                    Group,
                    Availability,
+                   Notification,
                    UserGroup,
                    UserEvent,
                    connect_to_db)
@@ -43,6 +44,13 @@ def add_availability(user, weekday, start, end):
     availability = Availability(user=user, weekday=weekday, start=start, end=end)
 
     return availability
+
+def add_notification(event_id, user_id, message, read_status=False):
+    """Create and return a notification record"""
+
+    notification = Notification(event_id=event_id, user_id=user_id, message=message, read_status=read_status)
+
+    return notification
 
 #querying functions for users
 def get_users():

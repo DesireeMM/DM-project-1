@@ -24,6 +24,9 @@ class User(db.Model):
     #establish relationship between user and their availability
     availabilities = db.relationship("Availability", order_by="Availability.weekday", back_populates="user")
 
+    #establish relationship between user and their event notifications
+    notifications = db.relationship("Notification", back_populates="user")
+
     def __repr__(self):
 
         return f"<User user_id: {self.user_id} email: {self.email}>"
@@ -45,6 +48,9 @@ class Event(db.Model):
     #establish relationships between users and events, events and a group
     users = db.relationship("User", secondary="users_events", back_populates="events")
     group = db.relationship("Group", back_populates="events")
+
+    #establish relationship between an event and its notifications
+    notification = db.relationship("Notification", back_populates="event")
 
     def __repr__(self):
 
@@ -86,6 +92,26 @@ class Availability(db.Model):
     def __repr__(self):
 
         return f"<Availability id: {self.avail_id} user: {self.user_id}>"
+
+#create notification class
+class Notification(db.Model):
+    """Contains notifications for users"""
+
+    __tablename__ = "notifications"
+
+    notification_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.event_id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
+    message = db.Column(db.String)
+    read_status = db.Column(db.Boolean, default=False)
+
+    #establish relationships between notifications and their event and user
+    user = db.relationship("User", back_populates="notifications")
+    event = db.relationship("Event", back_populates="notification")
+
+    def __repr__(self):
+
+        return f"<Notification id:{self.notification_id} event:{self.event.name}>"
 
 #create UserGroup association table
 class UserGroup(db.Model):

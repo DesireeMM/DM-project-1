@@ -4,6 +4,17 @@
 {% block body %}
     <h1>Welcome {{current_user.fname}}!</h1>
     <div class="container">
+        <div class="row">
+            <ul>
+                {% for notification in unread_notifications %}
+                    <li>
+                    {{notification}}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container">
         <div class="col">
             <h2>My Events</h2>
                 <ul>

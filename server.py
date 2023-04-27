@@ -31,6 +31,11 @@ def user_login():
     if current_user and current_user.password == user_password:
         session["user_id"] = current_user.user_id
         session["logged_in_email"] = current_user.email
+        session["notifications"]=current_user.notifications
+        print(current_user.notifications)
+        print(session["notifications"])
+        notifications_count = len(current_user.notifications)
+        session["notifications_count"] = notifications_count
         flash(f"Welcome, {current_user.fname}!")
         return redirect("/dashboard")
 
@@ -64,8 +69,22 @@ def view_dashboard():
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
 
+    unread_notifications = []
+
+    for notification in current_user.notifications:
+        if notification.read_status is False:
+            unread_notifications.append(notification.message)
+            notification.read_status = True
+#update notification count in the session
+            db.session.commit()
+        elif notification.read_status is True:
+            if notification.message in unread_notifications:
+                unread_notifications.remove(notification.message)
+
+    
     return render_template("dashboard.html",
-                           current_user=current_user)
+                           current_user=current_user,
+                           unread_notifications=unread_notifications)
 
 @app.route("/events")
 def view_events():
@@ -169,6 +188,7 @@ def show_updated_event():
     activity = request.form.get("activity")
     date = request.form.get("date")
     time = request.form.get("time")
+    event_datetime = date + " " + time
 
     if not name:
         name = target_event.name
@@ -176,48 +196,60 @@ def show_updated_event():
         desc = target_event.description
     if not activity:
         activity = target_event.activity
-
-    event_datetime = date + " " + time
+    if not date or not time:
+        event_datetime = target_event.datetime
+        
 
     crud.update_event(target_event_id,
                       name=name,
                       datetime=event_datetime,
                       activity=activity,
                       description=desc)
+    
+    notification_message = f"{target_event.name} on {target_event.datetime} has been updated."
+    
+    for user in target_event.users:
+        new_notification = crud.add_notification(event_id=target_event_id,
+                                                 user_id=user.user_id,
+                                                 message=notification_message,
+                                                 read_status=False)
+        db.session.add(new_notification)
+        db.session.commit()
 
     return redirect(f"/events/{target_event_id}")
 
-@app.route("/send-event-update")
-def send_event_update():
-    """Display form to send out a notification"""
-    current_user_id = session.get("user_id")
-    poss_events = crud.show_hosted_events(current_user_id)
+# @app.route("/send-event-update")
+# def send_event_update():
+#     """Display form to send out a notification"""
+#     current_user_id = session.get("user_id")
+#     poss_events = crud.show_hosted_events(current_user_id)
 
 
-    return render_template("send_update.html",
-                           poss_events=poss_events)
+#     return render_template("send_update.html",
+#                            poss_events=poss_events)
 
-@app.route("/send-update", methods=["POST"])
-def send_update_email():
-    """Handle sending an update email"""
+# @app.route("/send-update", methods=["POST"])
+# def send_update_email():
+#     """Handle sending an update email"""
 
-    event_id = request.form.get("event")
+#     event_id = request.form.get("event")
     
-    current_event = crud.get_event_by_id(event_id)
+#     current_event = crud.get_event_by_id(event_id)
 
-    recipients = []
-    for user in current_event.users:
-        recipients.append(user.email)
+#     recipients = []
+#     for user in current_event.users:
+#         recipients.append(user.email)
 
-    sender_email = "whentochill@gmail.com"
-    my_password = os.environ['GMAIL_PASSWORD']
-    message = "Trying this"
-    context = smtplib.ssl.create_default_context()
+#     sender_email = "whentochill@yahoo.com"
+#     my_password = os.environ['GMAIL_PASSWORD']
+#     message = "Trying this"
 
-    with smtplib.SMTP("smtp.gmail.com", 587) as connection:
-        connection.starttls(context=context)
-        connection.login(sender_email, my_password)
-        connection.sendmail(sender_email, sender_email, message)
+#     with smtplib.SMTP("smtp.mail.yahoo.com", 465) as connection:
+#         context = smtplib.ssl.create_default_context()
+#         connection.starttls(context=context)
+#         connection.login(sender_email, my_password)
+#         connection.sendmail(sender_email, sender_email, message)
+#         connection.quit()
 
 
 @app.route("/groups")
@@ -257,10 +289,12 @@ def show_group_availability(group_id):
     """Show availability details for a particular group"""
 
     group = crud.get_group_by_id(group_id)
+    creator = crud.get_user_by_id(group.created_by)
     members = crud.show_group_members(group_id)
-
+#sort the availabilities before displaying them here
     return render_template('group_avail_details.html',
                            group=group,
+                           creator=creator,
                            members=members)
 
 @app.route("/create-group")
@@ -329,7 +363,8 @@ def view_availability():
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
     availabilities = current_user.availabilities
-
+#sort availabilities using lambda function here
+#use a dictionary to match weekdays to numbers
     if logged_in_email is None:
         flash("You must log in to view availability.")
         return redirect("/")
