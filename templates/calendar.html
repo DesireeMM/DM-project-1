@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block title %} Personal Event Calendar{% endblock %}
-
+{% block head %}<script src="
+https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js
+"></script>
+{% endblock %}
 {% block body %}
 This is a placeholder for my personal event calendar page!
+<div id="calendar"></div>
+<script src="\static\js\displayCalendar.js"></script>
 {% endblock %}

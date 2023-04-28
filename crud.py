@@ -11,6 +11,14 @@ from model import (db,
                    connect_to_db)
 from datetime import timedelta, datetime, date
 
+weekday_dict = {"Monday": 0,
+                "Tuesday": 1,
+                "Wednesday": 2,
+                "Thursday": 3,
+                "Friday": 4,
+                "Saturday": 5,
+                "Sunday": 6}
+
 #creation functions
 def create_user(fname, lname, email, password, phone=None):
     """Create and return a new user"""
@@ -40,8 +48,9 @@ def create_group(created_by, name):
 
 def add_availability(user, weekday, start, end):
     """Create and return an availability record"""
+    weekday_as_int = weekday_dict[weekday.title()]
 
-    availability = Availability(user=user, weekday=weekday, start=start, end=end)
+    availability = Availability(user=user, weekday=weekday, weekday_as_int=weekday_as_int, start=start, end=end)
 
     return availability
 

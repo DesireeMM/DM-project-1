@@ -86,7 +86,7 @@ end_times = [five_pm, six_pm, nine30_pm, ten_pm]
 i = 0
 while i < 3:
     for user in all_users:
-        new_avail =crud.add_availability(user, choice(weekdays), choice(start_times), choice(end_times))
+        new_avail =crud.add_availability(user=user, weekday=choice(weekdays), start=choice(start_times), end=choice(end_times))
         model.db.session.add(new_avail)
         model.db.session.commit()
     i += 1

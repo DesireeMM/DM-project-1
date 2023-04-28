@@ -13,7 +13,6 @@ app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
 
-
 @app.route("/")
 def homepage():
     """View homepage"""
@@ -158,7 +157,13 @@ def add_event():
 def view_personal_calendar():
     """Display a user's personal event calendar"""
     
-    return render_template("calendar.html")
+    current_user = crud.get_user_by_id(session["user_id"])
+    personal_events = current_user.events
+    #convert personal_events to a list of dictionaries
+    #send list of dictionaries instead of list of objects
+    
+    return render_template("calendar.html",
+                           personal_events=personal_events)
 
 @app.route("/update-event/<event_id>")
 def update_event(event_id):
@@ -291,7 +296,7 @@ def show_group_availability(group_id):
     group = crud.get_group_by_id(group_id)
     creator = crud.get_user_by_id(group.created_by)
     members = crud.show_group_members(group_id)
-#sort the availabilities before displaying them here
+
     return render_template('group_avail_details.html',
                            group=group,
                            creator=creator,
@@ -363,8 +368,7 @@ def view_availability():
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
     availabilities = current_user.availabilities
-#sort availabilities using lambda function here
-#use a dictionary to match weekdays to numbers
+
     if logged_in_email is None:
         flash("You must log in to view availability.")
         return redirect("/")

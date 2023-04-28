@@ -22,7 +22,7 @@ class User(db.Model):
     groups = db.relationship("Group", secondary="users_groups", back_populates="users")
 
     #establish relationship between user and their availability
-    availabilities = db.relationship("Availability", order_by="Availability.weekday", back_populates="user")
+    availabilities = db.relationship("Availability", order_by="Availability.weekday_as_int", back_populates="user")
 
     #establish relationship between user and their event notifications
     notifications = db.relationship("Notification", back_populates="user")
@@ -83,6 +83,7 @@ class Availability(db.Model):
     avail_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"))
     weekday = db.Column(db.String(15))
+    weekday_as_int = db.Column(db.Integer)
     start = db.Column(db.Time, nullable=True)
     end = db.Column(db.Time, nullable=True)
 
