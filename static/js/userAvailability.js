@@ -2,21 +2,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
     
     const calendar = new FullCalendar.Calendar(calendarEl, {
-        headerToolbar: { center: 'dayGridMonth,timeGridWeek' }, // buttons for switching between views
-      
-        views: {
-          dayGridMonth: { // name of view
-            titleFormat: { year: 'numeric', month: '2-digit', day: '2-digit' }
-            // other view-specific options here
-          }
-        },
+        timeZone: 'UTC',
+      initialView: 'timeGridWeek',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'timeGridWeek,timeGridDay'
+      },
     });
 
-    fetch('/api/events')
+    fetch('/api/user-availability')
           .then((response) => response.json())
           .then((events) => {
             for (const event of events) {
-              console.log(event)
               calendar.addEvent(event)
             }
             calendar.render();

@@ -11,13 +11,13 @@ from model import (db,
                    connect_to_db)
 from datetime import timedelta, datetime, date
 
-weekday_dict = {"Monday": 0,
-                "Tuesday": 1,
-                "Wednesday": 2,
-                "Thursday": 3,
-                "Friday": 4,
-                "Saturday": 5,
-                "Sunday": 6}
+weekday_dict = {"Sunday": 0,
+                "Monday": 1,
+                "Tuesday": 2,
+                "Wednesday": 3,
+                "Thursday": 4,
+                "Friday": 5,
+                "Saturday": 6}
 
 #creation functions
 def create_user(fname, lname, email, password, phone=None):

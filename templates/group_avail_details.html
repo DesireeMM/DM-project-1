@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block title %} {{ group.name }} - Availability {% endblock %}
-
+{% block head %}<script src="
+https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js
+"></script>
+{% endblock %}
 {% block body %}
 <div class="container">
     <div class="row">
@@ -22,4 +25,6 @@
         </div>
     </div>
 </div>
+<div id="calendar"></div>
+<script src="/static/js/groupAvailability.js"></script>
 {% endblock %}

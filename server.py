@@ -3,7 +3,7 @@
 import smtplib
 import os
 from datetime import datetime
-from flask import (Flask, render_template, request, flash, session, redirect)
+from flask import (Flask, render_template, request, flash, session, redirect, jsonify)
 from model import connect_to_db, db
 import crud
 
@@ -31,8 +31,6 @@ def user_login():
         session["user_id"] = current_user.user_id
         session["logged_in_email"] = current_user.email
         session["notifications"]=current_user.notifications
-        print(current_user.notifications)
-        print(session["notifications"])
         notifications_count = len(current_user.notifications)
         session["notifications_count"] = notifications_count
         flash(f"Welcome, {current_user.fname}!")
@@ -153,17 +151,34 @@ def add_event():
 
     return redirect(f"/events/{event_id}")
 
+@app.route("/api/events")
+def grab_personal_events():
+    """Store a user's event information in JSON"""
+    
+    current_user = crud.get_user_by_id(session["user_id"])
+    personal_events = current_user.events
+    
+    events = []
+    for event in personal_events:
+        if event.datetime:
+            event_datetime = event.datetime
+            event_iso_datetime = event_datetime.isoformat()
+
+            events.append({
+                "id": event.event_id,
+                "start": event_iso_datetime,
+                "title": event.name,
+                "url": f"/events/{event.event_id}",
+                "display": "auto"
+            })
+    
+    return jsonify(events)
+
 @app.route("/events-personal")
 def view_personal_calendar():
     """Display a user's personal event calendar"""
     
-    current_user = crud.get_user_by_id(session["user_id"])
-    personal_events = current_user.events
-    #convert personal_events to a list of dictionaries
-    #send list of dictionaries instead of list of objects
-    
-    return render_template("calendar.html",
-                           personal_events=personal_events)
+    return render_template("calendar.html")
 
 @app.route("/update-event/<event_id>")
 def update_event(event_id):
@@ -294,6 +309,7 @@ def show_group_availability(group_id):
     """Show availability details for a particular group"""
 
     group = crud.get_group_by_id(group_id)
+    session["current_group_id"] = group_id
     creator = crud.get_user_by_id(group.created_by)
     members = crud.show_group_members(group_id)
 
@@ -301,6 +317,30 @@ def show_group_availability(group_id):
                            group=group,
                            creator=creator,
                            members=members)
+
+@app.route("/api/group-availability")
+def get_group_availability():
+    """Get availability details for members of a group"""
+
+    members = crud.show_group_members(session["current_group_id"])
+
+    events = []
+    for member in members:
+        name = member.fname
+        for availability in member.availabilities:
+            events.append({
+                "id": availability.avail_id,
+                "daysOfWeek": [availability.weekday_as_int],
+                "startTime": availability.start.isoformat(),
+                "endTime": availability.end.isoformat(),
+                "startRecur": datetime.now(),
+                "title": name,
+                "display": "auto"
+            })
+
+    session.pop("group_id", default=None)
+
+    return jsonify(events)
 
 @app.route("/create-group")
 def create_group():
@@ -407,6 +447,26 @@ def update_availability():
         "success": True,
         "status": "You have updated your availability."
     }
+
+@app.route("/api/user-availability")
+def get_user_availability():
+    """Get availability details for logged in user"""
+
+    user = crud.get_user_by_id(session["user_id"])
+
+    events = []
+    for availability in user.availabilities:
+        events.append({
+            "id": availability.avail_id,
+            "daysOfWeek": [availability.weekday_as_int],
+            "startTime": availability.start.isoformat(),
+            "endTime": availability.end.isoformat(),
+            "startRecur": datetime.now(),
+            "title": None,
+            "display": "auto"
+        })
+
+    return jsonify(events)
 
 @app.route("/logout")
 def user_logout():
