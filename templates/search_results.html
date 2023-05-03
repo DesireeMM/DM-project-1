@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Activity Search Results{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col d-flex justify-content-center">
+        <a href="/search" class="lead backlink">
+          Go back to the search form
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div id="results-as-json">
+          <h2>Results as JSON</h2>
+          <pre>{{ data }}</pre>
+        </div>
+
+        <div id="search-results">
+          <h2>Activity Search Results</h2>
+
+          <p>
+            <span id="result-count">
+              {{ data['page']['totalElements'] }}
+            </span>
+            activities matched your search.
+          </p>
+
+          <ul class="events-list">
+            {% for event in results %}
+              <li>
+                <a href="/event/{{ event['id'] }}" target="_blank">
+                  {{ event['name'] }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

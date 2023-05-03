@@ -1,7 +1,7 @@
 """Server for my app"""
 
-import smtplib
 import os
+import requests
 from datetime import datetime
 from flask import (Flask, render_template, request, flash, session, redirect, jsonify)
 from model import connect_to_db, db
@@ -12,6 +12,8 @@ from jinja2 import StrictUndefined
 app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
+
+API_KEY = os.environ["GMAPS_API_KEY"]
 
 @app.route("/")
 def homepage():
@@ -63,9 +65,15 @@ def create_new_account():
 @app.route("/dashboard")
 def view_dashboard():
     """View User Dashboard"""
+    logged_in_email = session.get("logged_in_email")
+    if logged_in_email is None:
+        flash("You must log in to view your dashboard.")
+        return redirect("/")
+    
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
 
+    
     unread_notifications = []
 
     for notification in current_user.notifications:
@@ -321,24 +329,46 @@ def show_group_availability(group_id):
 @app.route("/api/group-availability")
 def get_group_availability():
     """Get availability details for members of a group"""
-
+    
+    weekday_dict = {"Sunday": 0,
+                "Monday": 1,
+                "Tuesday": 2,
+                "Wednesday": 3,
+                "Thursday": 4,
+                "Friday": 5,
+                "Saturday": 6}
+    
     members = crud.show_group_members(session["current_group_id"])
-
+    availabilities = crud.create_availability_ref(session["current_group_id"])
     events = []
-    for member in members:
-        name = member.fname
-        for availability in member.availabilities:
-            events.append({
-                "id": availability.avail_id,
-                "daysOfWeek": [availability.weekday_as_int],
-                "startTime": availability.start.isoformat(),
-                "endTime": availability.end.isoformat(),
-                "startRecur": datetime.now(),
-                "title": name,
-                "display": "auto"
-            })
 
-    session.pop("group_id", default=None)
+    for weekday in availabilities:
+        attendees, start_time, end_time = crud.get_time_range_loop(availabilities, weekday)
+        best_start, best_end = crud.get_best_range(availabilities, weekday, start_time, end_time)
+        
+        attendee_str = ""
+        for attendee in attendees:
+            if attendee_str:
+                attendee_str = attendee_str + ", " + attendee
+            else:
+                attendee_str = attendee
+        
+        color = f"rgb(228, 187, 252, {len(attendees)/len(members)})"
+        
+        events.append({
+            "id": weekday,
+            "daysOfWeek": [weekday_dict[weekday]],
+            "startTime": best_start.isoformat(),
+            "endTime": best_end.isoformat(),
+            "startRecur": datetime.now(),
+            "title": f"{len(attendees)}: {attendee_str}",
+            "display": "auto",
+            "color": f"{color}",
+            "textColor": "black",
+            "borderColor": "black"
+        })
+
+    session.pop("current_group_id", default=None)
 
     return jsonify(events)
 
@@ -462,11 +492,51 @@ def get_user_availability():
             "startTime": availability.start.isoformat(),
             "endTime": availability.end.isoformat(),
             "startRecur": datetime.now(),
-            "title": None,
+            "title": availability.weekday,
             "display": "auto"
         })
 
     return jsonify(events)
+
+@app.route("/search")
+def show_search_form():
+    """Display form for making searches"""
+
+    return render_template("search_form.html")
+
+@app.route("/api/search")
+def search_for_activities():
+    """Make API call to Google Places"""
+    
+    search_input = request.args.get('input', '')
+    #get location from the form
+    location = request.args.get('location', '')
+    #use geocoding to convert location to latlng
+    #geo_location = code goes here (use Google geocoding or navigator.geolocation)
+    #navigator.geolocation may not work if site is not hosted with HTTPS, double check before proceeding
+    #radius is in m and automatically clamped to max 50000m
+    radius = request.args.get('radius', '')
+
+    url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+    
+    payload = {'key': API_KEY, 'keyword': search_input, 'location': location, 'radius': radius}
+
+    results = requests.get(url, payload)
+    #will return an array of places called results
+    #each Place will have attributes
+    #attributes I am interested in: formatted_address, formatted_phone_number, geometry, name, photos, rating, url, website
+
+    print(results.text)
+    data = results.json()
+
+    # if "candidates" in data:
+    #     candidates = data[candidates]
+    # else:
+    #     candidates = []
+
+    return render_template('search_results.html',
+                           results=results,
+                           data=data)
 
 @app.route("/logout")
 def user_logout():

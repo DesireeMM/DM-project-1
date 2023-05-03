@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Search For Activities{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h2>Search for Activities</h2>
+
+      <form method="GET" action="/api/search">
+        <div class="row">
+          <label class="form-label above" for="search-keyword">What are you looking for?</label>
+
+          <input
+            id="search-input"
+            class="form-control"
+            type="text"
+            name="keyword"
+          >
+          <label class="form-label above" for="search-location">Where do you want to search?</label>
+          <input
+            id="search-location"
+            class="form-control"
+            type="text"
+            name="location"
+          >
+          <label class="form-label above" for="search-radius">What radius are you looking in?</label>
+          <input
+            id="search-radius"
+            class="form-control"
+            type="text"
+            name="radius"
+          >
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
