@@ -1,8 +1,9 @@
 """Server for my app"""
 
 import os
-import requests
 from datetime import datetime
+import json
+import requests
 from flask import (Flask, render_template, request, flash, session, redirect, jsonify)
 from model import connect_to_db, db
 import crud
@@ -32,9 +33,6 @@ def user_login():
     if current_user and current_user.password == user_password:
         session["user_id"] = current_user.user_id
         session["logged_in_email"] = current_user.email
-        session["notifications"]=current_user.notifications
-        notifications_count = len(current_user.notifications)
-        session["notifications_count"] = notifications_count
         flash(f"Welcome, {current_user.fname}!")
         return redirect("/dashboard")
 
@@ -69,11 +67,9 @@ def view_dashboard():
     if logged_in_email is None:
         flash("You must log in to view your dashboard.")
         return redirect("/")
-    
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
 
-    
     unread_notifications = []
 
     for notification in current_user.notifications:
@@ -86,7 +82,6 @@ def view_dashboard():
             if notification.message in unread_notifications:
                 unread_notifications.remove(notification.message)
 
-    
     return render_template("dashboard.html",
                            current_user=current_user,
                            unread_notifications=unread_notifications)
@@ -162,10 +157,10 @@ def add_event():
 @app.route("/api/events")
 def grab_personal_events():
     """Store a user's event information in JSON"""
-    
+
     current_user = crud.get_user_by_id(session["user_id"])
     personal_events = current_user.events
-    
+
     events = []
     for event in personal_events:
         if event.datetime:
@@ -179,13 +174,13 @@ def grab_personal_events():
                 "url": f"/events/{event.event_id}",
                 "display": "auto"
             })
-    
+
     return jsonify(events)
 
 @app.route("/events-personal")
 def view_personal_calendar():
     """Display a user's personal event calendar"""
-    
+
     return render_template("calendar.html")
 
 @app.route("/update-event/<event_id>")
@@ -196,7 +191,10 @@ def update_event(event_id):
     availabilities = crud.create_availability_ref(group_id)
     best_day = crud.get_best_weekday(availabilities)
     attendees, start_time, end_time = crud.get_time_range_loop(availabilities, best_day)
-    best_start_time, best_end_time = crud.get_best_range(availabilities, best_day, start_time, end_time)
+    best_start_time, best_end_time = crud.get_best_range(availabilities,
+                                                         best_day,
+                                                         start_time,
+                                                         end_time)
 
     return render_template("update_event.html",
                            event=target_event,
@@ -226,16 +224,15 @@ def show_updated_event():
         activity = target_event.activity
     if not date or not time:
         event_datetime = target_event.datetime
-        
 
     crud.update_event(target_event_id,
                       name=name,
                       datetime=event_datetime,
                       activity=activity,
                       description=desc)
-    
+
     notification_message = f"{target_event.name} on {target_event.datetime} has been updated."
-    
+
     for user in target_event.users:
         new_notification = crud.add_notification(event_id=target_event_id,
                                                  user_id=user.user_id,
@@ -261,7 +258,7 @@ def show_updated_event():
 #     """Handle sending an update email"""
 
 #     event_id = request.form.get("event")
-    
+
 #     current_event = crud.get_event_by_id(event_id)
 
 #     recipients = []
@@ -329,7 +326,7 @@ def show_group_availability(group_id):
 @app.route("/api/group-availability")
 def get_group_availability():
     """Get availability details for members of a group"""
-    
+
     weekday_dict = {"Sunday": 0,
                 "Monday": 1,
                 "Tuesday": 2,
@@ -337,7 +334,7 @@ def get_group_availability():
                 "Thursday": 4,
                 "Friday": 5,
                 "Saturday": 6}
-    
+
     members = crud.show_group_members(session["current_group_id"])
     availabilities = crud.create_availability_ref(session["current_group_id"])
     events = []
@@ -345,16 +342,16 @@ def get_group_availability():
     for weekday in availabilities:
         attendees, start_time, end_time = crud.get_time_range_loop(availabilities, weekday)
         best_start, best_end = crud.get_best_range(availabilities, weekday, start_time, end_time)
-        
+
         attendee_str = ""
         for attendee in attendees:
             if attendee_str:
                 attendee_str = attendee_str + ", " + attendee
             else:
                 attendee_str = attendee
-        
+
         color = f"rgb(228, 187, 252, {len(attendees)/len(members)})"
-        
+
         events.append({
             "id": weekday,
             "daysOfWeek": [weekday_dict[weekday]],
@@ -390,10 +387,10 @@ def add_group():
 
     new_group = crud.create_group(created_by=current_user_id,
                                   name=group_name)
-    
+
     db.session.add(new_group)
     db.session.commit()
-    
+
     group_id = new_group.group_id
     crud.add_user(current_email, group_id)
 
@@ -507,36 +504,45 @@ def show_search_form():
 @app.route("/api/search")
 def search_for_activities():
     """Make API call to Google Places"""
-    
-    search_input = request.args.get('input', '')
+
+    search_input = request.args.get('keyword', '')
     #get location from the form
     location = request.args.get('location', '')
     #use geocoding to convert location to latlng
-    #geo_location = code goes here (use Google geocoding or navigator.geolocation)
-    #navigator.geolocation may not work if site is not hosted with HTTPS, double check before proceeding
+    #should be able to pass in address and api key and the request will automatically format
+    geo_location_results = requests.get(f"https://maps.googleapis.com/maps/api/geocode/json?address={location}&key={API_KEY}")
+    
+    print(geo_location_results.text)
+    geo_results_dict = json.loads(geo_location_results.text)
+
+    geo_location_lat = geo_results_dict['results'][0]['geometry']['location']['lat']
+    geo_location_lng = geo_results_dict['results'][0]['geometry']['location']['lng']
+
+    geo_location = f"{geo_location_lat}, {geo_location_lng}"
+    
+    print(geo_location_lat)
+    print(geo_location_lng)
+    print(geo_location)
+
     #radius is in m and automatically clamped to max 50000m
-    radius = request.args.get('radius', '')
+    radius = request.args.get('radius', '50000')
 
     url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-    
-    payload = {'key': API_KEY, 'keyword': search_input, 'location': location, 'radius': radius}
+
+    payload = {'key': API_KEY, 'keyword': search_input, 'location': geo_location, 'radius': radius}
 
     results = requests.get(url, payload)
+    print(results.request.url)
+    search_results = results.text
+    search_results_dict = json.loads(results.text)
     #will return an array of places called results
     #each Place will have attributes
     #attributes I am interested in: formatted_address, formatted_phone_number, geometry, name, photos, rating, url, website
 
-    print(results.text)
-    data = results.json()
-
-    # if "candidates" in data:
-    #     candidates = data[candidates]
-    # else:
-    #     candidates = []
 
     return render_template('search_results.html',
-                           results=results,
-                           data=data)
+                           results=search_results,
+                           search_results_dict = search_results_dict)
 
 @app.route("/logout")
 def user_logout():

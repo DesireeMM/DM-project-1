@@ -2,7 +2,7 @@
 
 {% block title %}Activity Search Results{% endblock %}
 
-{% block content %}
+{% block body %}
   <div class="container">
     <div class="row">
       <div class="col d-flex justify-content-center">
@@ -16,28 +16,14 @@
       <div class="col">
         <div id="results-as-json">
           <h2>Results as JSON</h2>
-          <pre>{{ data }}</pre>
+          <pre>{{ results }}</pre>
         </div>
 
         <div id="search-results">
           <h2>Activity Search Results</h2>
-
           <p>
-            <span id="result-count">
-              {{ data['page']['totalElements'] }}
-            </span>
-            activities matched your search.
+            {{ search_results_dict['results'] }}
           </p>
-
-          <ul class="events-list">
-            {% for event in results %}
-              <li>
-                <a href="/event/{{ event['id'] }}" target="_blank">
-                  {{ event['name'] }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
         </div>
       </div>
     </div>
