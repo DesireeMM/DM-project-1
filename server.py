@@ -472,7 +472,23 @@ def update_availability():
 
     return {
         "success": True,
-        "status": "You have updated your availability."
+        "status": "You have updated your availability.",
+        "redirect": "/availability"
+    }
+
+@app.route("/delete-availability", methods=["POST"])
+def delete_availability():
+    """Delete a user's availability"""
+
+    avail_id = request.json["avail_id"]
+    target_avail = crud.get_availability_by_id(avail_id)
+    weekday = target_avail.weekday
+    crud.delete_availability(avail_id)
+
+    return {
+        "success": True,
+        "status": f"You have deleted your availability record for {weekday}.",
+        "redirect": "/availability"
     }
 
 @app.route("/api/user-availability")
@@ -511,7 +527,7 @@ def search_for_activities():
     #use geocoding to convert location to latlng
     #should be able to pass in address and api key and the request will automatically format
     geo_location_results = requests.get(f"https://maps.googleapis.com/maps/api/geocode/json?address={location}&key={API_KEY}")
-    
+
     print(geo_location_results.text)
     geo_results_dict = json.loads(geo_location_results.text)
 
@@ -519,10 +535,6 @@ def search_for_activities():
     geo_location_lng = geo_results_dict['results'][0]['geometry']['location']['lng']
 
     geo_location = f"{geo_location_lat}, {geo_location_lng}"
-    
-    print(geo_location_lat)
-    print(geo_location_lng)
-    print(geo_location)
 
     #radius is in m and automatically clamped to max 50000m
     radius = request.args.get('radius', '50000')
@@ -532,17 +544,13 @@ def search_for_activities():
     payload = {'key': API_KEY, 'keyword': search_input, 'location': geo_location, 'radius': radius}
 
     results = requests.get(url, payload)
-    print(results.request.url)
-    search_results = results.text
     search_results_dict = json.loads(results.text)
     #will return an array of places called results
     #each Place will have attributes
     #attributes I am interested in: formatted_address, formatted_phone_number, geometry, name, photos, rating, url, website
 
 
-    return render_template('search_results.html',
-                           results=search_results,
-                           search_results_dict = search_results_dict)
+    return jsonify({"geo_location_lat": geo_location_lat, "geo_location_lng": geo_location_lng, "results": search_results_dict['results']})
 
 @app.route("/logout")
 def user_logout():

@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}Search For Activities{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="/static/css/maps.css"/>
 
+{% endblock %}
 {% block body %}
 <div class="container">
   <div class="row">
     <div class="col">
       <h2>Search for Activities</h2>
-
-      <form method="GET" action="/api/search">
         <div class="row">
           <label class="form-label above" for="search-keyword">What are you looking for?</label>
 
@@ -33,9 +34,18 @@
             name="radius"
           >
         </div>
-        <button type="Submit">Search</button>
-      </form>
+        <button type="button" id="search-form">Search</button>
     </div>
   </div>
+  <div class="row">
+    <section class="map">
+      <div id="map"></div>
+    </section>
+  </div>
 </div>
+<script src="/static/js/displayMap.js"></script>
+<script
+    async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBonGfyMdvJQTIY1lPCRQPczhYca8ZqB8A&callback=initMap">
+  </script>
 {% endblock %}

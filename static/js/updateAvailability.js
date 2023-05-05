@@ -19,10 +19,12 @@ for (const button of updateButtons) {
                 'Content-Type': 'application/json',
             }
         })
-        .then(response => response.text())
-        .then(responseText => {
+        .then(response => response.json())
+        .then(responseJson => {
+            alert(responseJson.status);
             const availHTML = document.querySelector(`#avail_${availID}`);
             availHTML.innerText = `${newStart} to ${newEnd}`;
+            window.location.replace(responseJson.redirect)
         })
     })
 }

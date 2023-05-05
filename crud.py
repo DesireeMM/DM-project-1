@@ -147,6 +147,12 @@ def show_availability(user_id):
     return user.availabilities
 
     # return Availability.query.filter(Availability.user_id == user_id).all()
+def get_availability_by_id(avail_id):
+    """Return a specific availability record"""
+
+    avail = Availability.query.get(avail_id)
+
+    return avail
 
 #updating functions
 def update_event(event_id, name, datetime, activity, description=None):
@@ -165,6 +171,13 @@ def update_availability(avail_id, start, end):
     target_user_avail = Availability.query.get(avail_id)
     target_user_avail.start = start
     target_user_avail.end = end
+    db.session.commit()
+
+def delete_availability(avail_id):
+    """Delete a user's availability record given its id"""
+
+    target_user_avail = Availability.query.get(avail_id)
+    db.session.delete(target_user_avail)
     db.session.commit()
 
 
