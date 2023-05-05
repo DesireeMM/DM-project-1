@@ -180,6 +180,41 @@ def delete_availability(avail_id):
     db.session.delete(target_user_avail)
     db.session.commit()
 
+def delete_group(group_id):
+    """Delete an entire group given its id"""
+    print(group_id)
+    target_group = Group.query.get(group_id)
+    db.session.delete(target_group)
+    db.session.commit()
+
+def delete_event(event_id):
+    """Delete an entire event given its id"""
+
+    target_event = Event.query.get(event_id)
+    db.session.delete(target_event)
+    db.session.commit()
+
+def update_user_groups(user_id, group_id):
+    """Remove association between a user and a particular group."""
+
+    target_user = User.query.get(user_id)
+    target_group = Group.query.get(group_id)
+
+    user_groups = target_user.groups
+    user_groups.remove(target_group)
+
+    db.session.commit()
+
+def update_user_events(user_id, event_id):
+    """Remove association between a user and a particular event."""
+
+    target_user = User.query.get(user_id)
+    target_event = Event.query.get(event_id)
+
+    user_events = target_user.events
+    user_events.remove(target_event)
+
+    db.session.commit()
 
 #relationship functions
 def add_user(email, group_id):

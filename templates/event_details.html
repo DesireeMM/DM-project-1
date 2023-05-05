@@ -25,7 +25,13 @@
         </div>
         <a href="/update-event/{{event.event_id}}">Update this event</a>
         <br><br>
+        {% if current_user.user_id == event_host.user_id %}
+    <p>
+        <button type="button" id="delete-event">Delete this event.</button>
+        <input type="hidden" id="event_id_num" value={{event.event_id}}>
+    </p>
+    {% endif %}
     </div>
 </div>
-
+<script src="/static/js/deleteEvent.js"></script>
 {% endblock %}

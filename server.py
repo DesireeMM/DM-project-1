@@ -69,7 +69,8 @@ def view_dashboard():
         return redirect("/")
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
-
+    availabilities = current_user.availabilities
+    
     unread_notifications = []
 
     for notification in current_user.notifications:
@@ -84,7 +85,8 @@ def view_dashboard():
 
     return render_template("dashboard.html",
                            current_user=current_user,
-                           unread_notifications=unread_notifications)
+                           unread_notifications=unread_notifications,
+                           availabilities=availabilities)
 
 @app.route("/events")
 def view_events():
@@ -115,11 +117,41 @@ def show_event(event_id):
     group = crud.get_group_by_id(event.group_id)
     group_name = group.name
     event_host = crud.get_user_by_id(event.created_by)
+    current_user = crud.get_user_by_id(session["user_id"])
 
     return render_template("event_details.html",
                            event=event,
                            group_name=group_name,
-                           event_host=event_host)
+                           event_host=event_host,
+                           current_user=current_user)
+
+@app.route('/delete-event', methods=["POST"])
+def delete_event():
+    """Delete a particular event"""
+
+    event_id = request.json.get("event_id")
+    target_event = crud.get_event_by_id(event_id)
+    crud.delete_event(event_id)
+
+    return jsonify({
+        "status": f"You have deleted {target_event.name}.",
+        "redirect": '/events'
+    })
+
+@app.route("/leave-event", methods=["POST"])
+def leave_event():
+    """Remove a user from a particular event"""
+
+    user_id = session["user_id"]
+    event_id = request.json.get("event_id")
+    target_event = crud.get_event_by_id(event_id)
+
+    crud.update_user_events(user_id, event_id)
+
+    return ({
+        "status": f"You will not be attending {target_event.name}.",
+        "redirect": "/events"
+    })
 
 @app.route('/create-event')
 def create_event():
@@ -303,11 +335,42 @@ def show_group(group_id):
     group = crud.get_group_by_id(group_id)
     members = crud.show_group_members(group_id)
     group_creator = crud.get_user_by_id(group.created_by)
+    current_user = crud.get_user_by_id(session["user_id"])
 
     return render_template('group_details.html',
                            group=group,
                            members=members,
-                           group_creator=group_creator)
+                           group_creator=group_creator,
+                           current_user=current_user)
+
+@app.route("/delete-group", methods=["POST"])
+def delete_group():
+    """Delete an entire group from the database"""
+
+    group_id = request.json.get("group_id")
+    target_group = crud.get_group_by_id(group_id)
+
+    crud.delete_group(group_id)
+
+    return jsonify({
+        "status": f"You have deleted {target_group.name}.",
+        "redirect": "/groups"
+    })
+
+@app.route("/leave-group", methods=["POST"])
+def leave_group():
+    """Remove a user from a particular group"""
+
+    user_id = session["user_id"]
+    group_id = request.json.get("group_id")
+    target_group = crud.get_group_by_id(group_id)
+
+    crud.update_user_groups(user_id, group_id)
+
+    return ({
+        "status": f"You have left {target_group.name}.",
+        "redirect": "/groups"
+    })
 
 @app.route("/groups/<group_id>/availability")
 def show_group_availability(group_id):
@@ -433,13 +496,13 @@ def view_availability():
 
     logged_in_email = session.get("logged_in_email")
     current_user_id = session.get("user_id")
-    current_user = crud.get_user_by_id(current_user_id)
-    availabilities = current_user.availabilities
 
     if logged_in_email is None:
         flash("You must log in to view availability.")
         return redirect("/")
     else:
+        current_user = crud.get_user_by_id(current_user_id)
+        availabilities = current_user.availabilities
         return render_template("availability.html",
                                current_user=current_user,
                                availabilities=availabilities)
@@ -458,7 +521,7 @@ def add_availability():
     db.session.add(new_avail)
     db.session.commit()
 
-    return redirect("/availability")
+    return redirect("/dashboard")
 
 @app.route("/update-availability", methods=["POST"])
 def update_availability():
@@ -548,6 +611,7 @@ def search_for_activities():
     #will return an array of places called results
     #each Place will have attributes
     #attributes I am interested in: formatted_address, formatted_phone_number, geometry, name, photos, rating, url, website
+    print(search_results_dict)
 
 
     return jsonify({"geo_location_lat": geo_location_lat, "geo_location_lng": geo_location_lng, "results": search_results_dict['results']})

@@ -18,6 +18,7 @@
             class="form-control"
             type="text"
             name="keyword"
+            placeholder="Search for restaurants or activities in your area."
           >
           <label class="form-label above" for="search-location">Where do you want to search?</label>
           <input
@@ -25,27 +26,28 @@
             class="form-control"
             type="text"
             name="location"
+            placeholder="Enter a location: specific address, just City, State, or zip code."
           >
           <label class="form-label above" for="search-radius">What radius are you looking in?</label>
           <input
             id="search-radius"
             class="form-control"
-            type="text"
+            type="number"
             name="radius"
+            max="50000"
+            placeholder="Enter a number in meters (max: 50000)"
           >
         </div>
         <button type="button" id="search-form">Search</button>
     </div>
   </div>
-  <div class="row">
-    <section class="map">
-      <div id="map"></div>
-    </section>
-  </div>
 </div>
+<section class="map">
+  <div id="map"></div>
+</section>
 <script src="/static/js/displayMap.js"></script>
 <script
     async
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBonGfyMdvJQTIY1lPCRQPczhYca8ZqB8A&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtcmlhkDltO2Pp0_kB0VktNe3xhmQA9Wk&callback=initMap">
   </script>
 {% endblock %}

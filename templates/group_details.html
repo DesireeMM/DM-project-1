@@ -33,6 +33,13 @@
     <p>
         <a href="/groups/{{group.group_id}}/availability">See this group's availability.</a>
     </p>
+    {% if current_user.user_id == group_creator.user_id %}
+    <p>
+        <button type="button" id="delete-group">Delete this group.</button>
+        <input type="hidden" id="group_id_num" value={{group.group_id}}>
+    </p>
+    {% endif %}
     </div>
 </div>
+<script src="/static/js/deleteGroup.js"></script>
 {% endblock %}

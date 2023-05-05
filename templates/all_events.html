@@ -10,6 +10,7 @@
             {% for event in all_events %}
                 {% if event.datetime and event.datetime > current_datetime %}
                 <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
+                <button type="button" id="leave-event" value={{event.event_id}}>I can't make this event.</button>
                 {% endif %}
             {% endfor %}
         </div>
@@ -35,4 +36,5 @@
         </div>
     </div>
 </div>
+<script src="/static/js/leaveEvent.js"></script>
 {% endblock %}

@@ -14,7 +14,6 @@ function initMap() {
     fetch(`/api/search?${queryString}`)
     .then((response) => response.json())
     .then((searchResults) => {
-        console.log(searchResults);
 
         const searchCoords = {
             lat: searchResults['geo_location_lat'],
@@ -33,8 +32,9 @@ function initMap() {
             <div class="window-content">
               <ul class="place-info">
                 <li><b>Name: </b>${searchResults['results'][resultIndex]['name']}</li>
-                <li><b>Location: </b>${searchResults['results'][resultIndex]['geometry']['lat']}, 
-                ${searchResults['results'][resultIndex]['geometry']['lng']}</li>
+                <li><b>Location: </b>${searchResults['results'][resultIndex]['geometry']['location']['lat']}, 
+                ${searchResults['results'][resultIndex]['geometry']['location']['lng']}</li>
+                <li><b>Address: </b> ${searchResults['results']['formatted_address']}
               </ul>
             </div>
           `;

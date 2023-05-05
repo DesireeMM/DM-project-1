@@ -9,9 +9,11 @@
             <ul>
             {% for group in all_groups %}
             <li><a href="/groups/{{ group.group_id }}">{{ group.name }}</a></li>
+            <button type="button" id="leave-group" value={{group.group_id}}>Leave this group.</button>
             {% endfor %}
             </ul>
         </div>
     </div>
 </div>
+<script src="/static/js/leaveGroup.js"></script>
 {% endblock %}

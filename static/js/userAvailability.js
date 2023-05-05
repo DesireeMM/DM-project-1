@@ -15,8 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
           .then((response) => response.json())
           .then((events) => {
             for (const event of events) {
-              calendar.addEvent(event)
-              console.log(event);
+              calendar.addEvent(event);
             }
             calendar.render();
         })
