@@ -46,9 +46,8 @@ def create_group(created_by, name):
 
     return group
 
-def add_availability(user, weekday, start, end):
+def add_availability(user, weekday, weekday_as_int, start, end):
     """Create and return an availability record"""
-    weekday_as_int = weekday_dict[weekday.title()]
 
     availability = Availability(user=user, weekday=weekday, weekday_as_int=weekday_as_int, start=start, end=end)
 

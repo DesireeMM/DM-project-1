@@ -535,15 +535,33 @@ def add_availability():
 
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
-    weekday = request.form.get("weekday")
-    start = request.form.get("start-time")
-    end = request.form.get("end-time")
+    weekday = request.json.get("weekday").title()
+    weekday_as_int = weekday_dict[weekday]
+    start = request.json.get("start_time")
+    end = request.json.get("end_time")
 
-    new_avail = crud.add_availability(current_user, weekday.title(), start, end)
+    print(weekday)
+    print(start)
+    print(end)
+
+
+
+    new_avail = crud.add_availability(current_user, weekday, weekday_as_int, start, end)
     db.session.add(new_avail)
     db.session.commit()
 
-    return redirect("/dashboard")
+    new_record = {
+        "weekday": weekday,
+        "start_time": start,
+        "end_time": end,
+        "weekday_as_int": weekday_as_int,
+        "avail_id": new_avail.avail_id
+        }
+    
+    return jsonify({
+        "success": True,
+        "newRecord": new_record
+    })
 
 @app.route("/update-availability", methods=["POST"])
 def update_availability():
@@ -570,7 +588,7 @@ def update_availability():
 def delete_availability():
     """Delete a user's availability"""
 
-    avail_id = request.json["avail_id"]
+    avail_id = request.json["availID"]
     target_avail = crud.get_availability_by_id(avail_id)
     weekday = target_avail.weekday
     crud.delete_availability(avail_id)
@@ -578,7 +596,7 @@ def delete_availability():
     return {
         "success": True,
         "status": f"You have deleted your availability record for {weekday}.",
-        "redirect": "/availability"
+        "redirect": "/dashboard"
     }
 
 @app.route("/api/user-availability")
