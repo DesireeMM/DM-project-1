@@ -16,6 +16,14 @@ app.jinja_env.undefined = StrictUndefined
 
 API_KEY = os.environ["GMAPS_API_KEY"]
 
+weekday_dict = {"Sunday": 0,
+            "Monday": 1,
+            "Tuesday": 2,
+            "Wednesday": 3,
+            "Thursday": 4,
+            "Friday": 5,
+            "Saturday": 6}
+
 @app.route("/")
 def homepage():
     """View homepage"""
@@ -70,7 +78,7 @@ def view_dashboard():
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
     availabilities = current_user.availabilities
-    
+
     unread_notifications = []
 
     for notification in current_user.notifications:
@@ -390,13 +398,7 @@ def show_group_availability(group_id):
 def get_group_availability():
     """Get availability details for members of a group"""
 
-    weekday_dict = {"Sunday": 0,
-                "Monday": 1,
-                "Tuesday": 2,
-                "Wednesday": 3,
-                "Thursday": 4,
-                "Friday": 5,
-                "Saturday": 6}
+
 
     members = crud.show_group_members(session["current_group_id"])
     availabilities = crud.create_availability_ref(session["current_group_id"])
@@ -507,6 +509,26 @@ def view_availability():
                                current_user=current_user,
                                availabilities=availabilities)
 
+@app.route("/user-availability")
+def get_availability():
+    """Send current user's availability"""
+
+    current_user_id = session.get("user_id")
+    current_user = crud.get_user_by_id(current_user_id)
+    
+    availabilities = []
+
+    for record in current_user.availabilities:
+        new_record = {
+            "avail_id": record.avail_id,
+            "weekday": record.weekday,
+            "start_time": record.start.strftime("%H:%M"),
+            "end_time": record.end.strftime("%H:%M")
+        }
+        availabilities.append(new_record)
+
+    return jsonify(availabilities)
+
 @app.route("/add-availability", methods=["POST"])
 def add_availability():
     """Add a new availability record"""
@@ -527,16 +549,21 @@ def add_availability():
 def update_availability():
     """Update a user's availability"""
 
-    avail_id = request.json["avail_id"]
-    new_start = request.json["new_start"]
-    new_end = request.json["new_end"]
+    avail_id = request.json["availID"]
+    new_weekday = request.json["weekday"].title()
+    new_weekday_int = weekday_dict[new_weekday]
+    new_start = request.json["startTime"]
+    new_end = request.json["endTime"]
 
-    crud.update_availability(avail_id, new_start, new_end)
+    crud.update_availability(avail_id, new_weekday, new_weekday_int, new_start, new_end)
 
     return {
         "success": True,
         "status": "You have updated your availability.",
-        "redirect": "/availability"
+        "redirect": "/availability",
+        "weekday": f"{new_weekday}",
+        "startTime": f"{new_start}",
+        "endTime": f"{new_end}"
     }
 
 @app.route("/delete-availability", methods=["POST"])
@@ -609,12 +636,10 @@ def search_for_activities():
     results = requests.get(url, payload)
     search_results_dict = json.loads(results.text)
     #will return an array of places called results
-    #each Place will have attributes
-    #attributes I am interested in: formatted_address, formatted_phone_number, geometry, name, photos, rating, url, website
-    print(search_results_dict)
 
-
-    return jsonify({"geo_location_lat": geo_location_lat, "geo_location_lng": geo_location_lng, "results": search_results_dict['results']})
+    return jsonify({"geo_location_lat": geo_location_lat,
+                    "geo_location_lng": geo_location_lng,
+                    "results": search_results_dict['results']})
 
 @app.route("/logout")
 def user_logout():

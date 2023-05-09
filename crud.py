@@ -165,10 +165,12 @@ def update_event(event_id, name, datetime, activity, description=None):
     target_event.description = description
     db.session.commit()
 
-def update_availability(avail_id, start, end):
+def update_availability(avail_id, weekday, weekday_as_int, start, end):
     """Update a user's availability given their id"""
 
     target_user_avail = Availability.query.get(avail_id)
+    target_user_avail.weekday = weekday
+    target_user_avail.weekday_as_int = weekday_as_int
     target_user_avail.start = start
     target_user_avail.end = end
     db.session.commit()
