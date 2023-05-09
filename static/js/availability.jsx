@@ -25,6 +25,7 @@ function AvailabilityRecordContainer() {
     for (const currentRecord of records) {
         availRecords.push(
             <AvailabilityRecord
+                key = {currentRecord.avail_id}
                 availID = {currentRecord.avail_id}
                 weekday = {currentRecord.weekday}
                 startTime = {currentRecord.start_time}
@@ -102,7 +103,7 @@ function AvailabilityRecord(props) {
         <button type="button" onClick={() =>
         setFormDisplay(false)}>
             Hide Form</button>
-            <button type="button" onClick={updateAvailabilityRecord()}>
+            <button type="button" onClick={updateAvailabilityRecord}>
             Make Changes</button>
         </div>
     )}
