@@ -16,6 +16,7 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     phone = db.Column(db.String(12), nullable=True)
     password = db.Column(db.String(250), nullable=False)
+    user_img = db.Column(db.String, nullable=True)
 
     #establish relationships between users and events, users and groups
     events = db.relationship("Event", secondary="users_events", order_by="Event.datetime", back_populates="users")

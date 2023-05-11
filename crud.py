@@ -20,10 +20,10 @@ weekday_dict = {"Sunday": 0,
                 "Saturday": 6}
 
 #creation functions
-def create_user(fname, lname, email, password, phone=None):
+def create_user(fname, lname, email, password, phone=None, user_img=None):
     """Create and return a new user"""
 
-    user = User(fname=fname, lname=lname, email=email, phone=phone, password=password)
+    user = User(fname=fname, lname=lname, email=email, phone=phone, password=password, user_img=user_img)
 
     return user
 

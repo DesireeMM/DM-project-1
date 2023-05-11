@@ -71,6 +71,14 @@ for user in all_users:
 #adding availabilities
 weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
+weekday_dict = {"Sunday": 0,
+                "Monday": 1,
+                "Tuesday": 2,
+                "Wednesday": 3,
+                "Thursday": 4,
+                "Friday": 5,
+                "Saturday": 6}
+
 five_pm = time(17, 00)
 ten_pm = time(22, 00)
 six_pm = time(18, 00)
@@ -86,7 +94,8 @@ end_times = [five_pm, six_pm, nine30_pm, ten_pm]
 i = 0
 while i < 3:
     for user in all_users:
-        new_avail =crud.add_availability(user=user, weekday=choice(weekdays), start=choice(start_times), end=choice(end_times))
+        weekday=choice(weekdays)
+        new_avail =crud.add_availability(user=user, weekday=weekday, weekday_as_int=weekday_dict[weekday], start=choice(start_times), end=choice(end_times))
         model.db.session.add(new_avail)
         model.db.session.commit()
     i += 1

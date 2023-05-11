@@ -7,6 +7,7 @@ import requests
 from flask import (Flask, render_template, request, flash, session, redirect, jsonify)
 from model import connect_to_db, db
 import crud
+import cloudinary.uploader
 
 from jinja2 import StrictUndefined
 
@@ -15,6 +16,9 @@ app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
 
 API_KEY = os.environ["GMAPS_API_KEY"]
+CLOUDINARY_KEY = os.environ["CLOUDINARY_KEY"]
+CLOUDINARY_SECRET = os.environ["CLOUDINARY_SECRET"]
+CLOUD_NAME = "dkraqtb6p"
 
 weekday_dict = {"Sunday": 0,
             "Monday": 1,
@@ -540,12 +544,6 @@ def add_availability():
     start = request.json.get("start_time")
     end = request.json.get("end_time")
 
-    print(weekday)
-    print(start)
-    print(end)
-
-
-
     new_avail = crud.add_availability(current_user, weekday, weekday_as_int, start, end)
     db.session.add(new_avail)
     db.session.commit()
@@ -596,7 +594,8 @@ def delete_availability():
     return {
         "success": True,
         "status": f"You have deleted your availability record for {weekday}.",
-        "redirect": "/dashboard"
+        "redirect": "/dashboard",
+        "target_avail": avail_id
     }
 
 @app.route("/api/user-availability")
@@ -636,7 +635,6 @@ def search_for_activities():
     #should be able to pass in address and api key and the request will automatically format
     geo_location_results = requests.get(f"https://maps.googleapis.com/maps/api/geocode/json?address={location}&key={API_KEY}")
 
-    print(geo_location_results.text)
     geo_results_dict = json.loads(geo_location_results.text)
 
     geo_location_lat = geo_results_dict['results'][0]['geometry']['location']['lat']
@@ -658,6 +656,61 @@ def search_for_activities():
     return jsonify({"geo_location_lat": geo_location_lat,
                     "geo_location_lng": geo_location_lng,
                     "results": search_results_dict['results']})
+
+@app.route("/settings")
+def user_settings():
+    """Display form that allows a user to change account settings"""
+
+    current_user = crud.get_user_by_id(session["user_id"])
+
+    return render_template("settings.html",
+                           current_user=current_user)
+
+@app.route("/user-changes", methods=["POST"])
+def make_user_account_changes():
+    """Make changes to user account"""
+
+    current_user = crud.get_user_by_id(session["user_id"])
+
+    old_password = request.form.get("old-password")
+    new_pass_1 = request.form.get("new-pass-1")
+    new_pass_2 = request.form.get("new-pass-2")
+
+    if old_password == current_user.password and new_pass_1 == new_pass_2:
+        current_user.password = new_pass_1
+        db.session.commit()
+        flash("Password changed successfully.")
+
+    elif new_pass_1 != new_pass_2:
+        flash("New passwords don't match, please try again.")
+        return redirect("/settings")
+    
+    elif old_password != current_user.password:
+        flash("Incorrect password, please try again.")
+        return redirect("/settings")
+
+    return redirect("/settings")
+
+@app.route("/user-pic-data", methods=["POST"])
+def get_user_pic_data():
+    """Use Cloudinary API to get user profile picture"""
+    
+    current_user = crud.get_user_by_id(session["user_id"])
+    user_pic = request.files['user-pic']
+
+    result = cloudinary.uploader.upload(user_pic,
+                                        api_key=CLOUDINARY_KEY,
+                                        api_secret=CLOUDINARY_SECRET,
+                                        cloud_name=CLOUD_NAME)
+    
+    img_url = result['secure_url']
+
+    current_user.user_img = img_url
+    db.session.commit()
+
+    return redirect("/settings")
+
+
 
 @app.route("/logout")
 def user_logout():

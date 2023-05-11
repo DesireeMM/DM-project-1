@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %} Account Settings {% endblock %}
+
+{% block body %}
+<div class="container">
+<h1>{{ current_user.fname }}</h1>
+<div class="container">
+<h2>Change My Password</h2>
+<form action="/user-changes" method="POST">
+Old Password:<input type="password" name="old-password">
+<br><br>
+New Password: <input type="password" name="new-pass-1">
+<br><br>
+Confirm Password: <input type="password" name="new-pass-2">
+<br><br>
+<button type="submit">Change Password</button>
+</form>
+</div>
+<div class="container">
+<h2>Upload New Profile Picture</h2>
+<form action="/user-pic-data" method="POST" enctype="multipart/form-data">
+    <input type="file" name="user-pic">
+    <input type="submit">
+</form>
+</div>
+{% if current_user.user_img %}
+<div class="container">
+<div class="col">
+<h2>Current Profile Picture</h2>
+<img src={{ current_user.user_img }} class="img-fluid">
+</div>
+</div>
+{% endif %}
+</div>
+{% endblock %}

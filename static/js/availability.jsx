@@ -14,7 +14,35 @@ function AvailabilityRecordContainer() {
         
     }, [])
 
-    //this function goes in AddAvailabilityRecord component
+    function deleteAvailabilityRecord(availID) {
+        console.log("I am getting called!")
+
+        fetch('/delete-availability', {
+            method: 'POST',
+            body: JSON.stringify({ "availID": availID }),
+            headers: {
+            'Content-Type': 'application/json',
+            }
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            alert(responseJson.status);
+            const deletedRecord = responseJson.target_avail;
+            const updatedRecords = []
+            //loop through records with for loop
+            for (const record of records) {
+                if (record["avail_id"] !== deletedRecord) {
+                    updatedRecords.push(record)
+                }
+            }
+            //add everything except the one you want to delete to a new list
+            //then update the state with setRecords
+            //pass this function in as prop to all child components
+            setRecords(updatedRecords);
+        })
+    }
+
+    //this function goes in AddAvailabilityRecord component as a prop
     function addRecord(newAvailRecord) {
         const currentRecords = [...records];
         setRecords([...currentRecords, newAvailRecord]);
@@ -25,11 +53,12 @@ function AvailabilityRecordContainer() {
     for (const currentRecord of records) {
         availRecords.push(
             <AvailabilityRecord
-                key = {currentRecord.avail_id}
-                availID = {currentRecord.avail_id}
-                weekday = {currentRecord.weekday}
-                startTime = {currentRecord.start_time}
-                endTime = {currentRecord.end_time}
+                key={currentRecord.avail_id}
+                availID={currentRecord.avail_id}
+                weekday={currentRecord.weekday}
+                startTime={currentRecord.start_time}
+                endTime={currentRecord.end_time}
+                deleteAvailabilityRecord={deleteAvailabilityRecord}
                 />
         )
     }
@@ -54,8 +83,6 @@ function AvailabilityRecord(props) {
     const [weekdayInput, setWeekdayInput] = React.useState(props.weekday);
     const [startTimeInput, setStartTimeInput] = React.useState(props.startTime);
     const [endTimeInput, setEndTimeInput] = React.useState(props.endTime);
-    // for deleting a record
-    const [isDeleted, setIsDeleted] = React.useState(false)
 
     function updateAvailabilityRecord() {
         fetch('/update-availability', {
@@ -72,24 +99,6 @@ function AvailabilityRecord(props) {
         setEndTime(responseJson.endTime);
         })
       }
-
-      function deleteAvailabilityRecord() {
-        console.log("I am getting called!")
-
-        fetch('/delete-availability', {
-            method: 'POST',
-            body: JSON.stringify({ "availID": props.availID }),
-            headers: {
-            'Content-Type': 'application/json',
-            }
-        })
-        .then((response) => response.json())
-        .then((responseJson) => {
-            setIsDeleted(responseJson.success);
-            alert(responseJson.status);
-        })
-    }
-
 
     if (formDisplay) {
     return (
@@ -137,7 +146,7 @@ function AvailabilityRecord(props) {
         <button type="button" onClick={() =>
             setFormDisplay(true)}>
             Change this record</button>
-        <button type="button" onClick={deleteAvailabilityRecord}>
+        <button type="button" onClick={() => props.deleteAvailabilityRecord(props.availID)}>
         Delete this record</button>
       </div>
     );

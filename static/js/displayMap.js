@@ -38,7 +38,7 @@ function initMap() {
               </ul>
             </div>
           `;
-            console.log(searchResults['results'][resultIndex]['geometry']);
+
             const placeMarker = new google.maps.Marker({
                 position: {
                   lat: searchResults['results'][resultIndex]['geometry']['location']['lat'], 
@@ -55,7 +55,6 @@ function initMap() {
           });
         }
     })
-    // window.location.replace(responseJson.redirect);
     })
    
 }
