@@ -1,5 +1,6 @@
 """CRUD operations"""
 
+from datetime import timedelta, datetime, date
 from model import (db,
                    User,
                    Event,
@@ -9,7 +10,7 @@ from model import (db,
                    UserGroup,
                    UserEvent,
                    connect_to_db)
-from datetime import timedelta, datetime, date
+from passlib.hash import argon2
 
 weekday_dict = {"Sunday": 0,
                 "Monday": 1,
@@ -23,7 +24,12 @@ weekday_dict = {"Sunday": 0,
 def create_user(fname, lname, email, password, phone=None, user_img=None):
     """Create and return a new user"""
 
-    user = User(fname=fname, lname=lname, email=email, phone=phone, password=password, user_img=user_img)
+    user = User(fname=fname,
+                lname=lname,
+                email=email,
+                phone=phone,
+                password=password,
+                user_img=user_img)
 
     return user
 
@@ -39,24 +45,32 @@ def create_event(created_by, group_id, name, datetime=None, activity=None, descr
 
     return event
 
-def create_group(created_by, name):
+def create_group(created_by, name, group_img=None):
     """Create and return a new group"""
 
-    group = Group(created_by=created_by, name=name)
+    group = Group(created_by=created_by, name=name, group_img=group_img)
 
     return group
 
 def add_availability(user, weekday, weekday_as_int, start, end):
     """Create and return an availability record"""
 
-    availability = Availability(user=user, weekday=weekday, weekday_as_int=weekday_as_int, start=start, end=end)
+    availability = Availability(user=user,
+                                weekday=weekday,
+                                weekday_as_int=weekday_as_int,
+                                start=start,
+                                end=end)
 
     return availability
 
-def add_notification(event_id, user_id, message, read_status=False):
+def add_notification(user_id, message, read_status=False, event_id=None, group_id=None):
     """Create and return a notification record"""
 
-    notification = Notification(event_id=event_id, user_id=user_id, message=message, read_status=read_status)
+    notification = Notification(event_id=event_id,
+                                group_id=group_id,
+                                user_id=user_id,
+                                message=message,
+                                read_status=read_status)
 
     return notification
 
@@ -267,7 +281,7 @@ def get_best_weekday(availabilities):
         if longest_so_far is None or len(value) > longest_so_far:
             longest_so_far = len(value)
             best_weekday = key
-    
+
     return best_weekday
 
 def get_time_range_loop(availabilities, weekday):
@@ -289,12 +303,14 @@ def get_time_range_loop(availabilities, weekday):
     end_time = max(poss_end_times)
 
     return attendees, start_time, end_time
-#now we have a list of possible attendees, the earliest possible start time, and the latest possible end time
+# now we have a list of possible attendees,
+# the earliest possible start time,
+# and the latest possible end time
 
 def add_time(time1, delta):
     """Function used to convert a time object to a datetime object.
     Necessary to add a time object and a timedelta object."""
-    
+
     new_dt = datetime.combine(date.today(), time1) + delta
     return new_dt.time()
 
@@ -318,7 +334,9 @@ def get_best_range(availabilities, weekday, start_time, end_time):
             else:
                 continue
         loop_start_time = add_time(loop_start_time, interval)
-#now we have a dictionary where keys are the 30-min interval times and values are the number of people available
+#now we have a dictionary where:
+#keys are the 30-min interval times and
+#values are the number of people available
 #then we can get the max of the values
     max_people = max(time_range_dict.values())
 #loop through key:value pairs
@@ -335,17 +353,13 @@ def get_best_range(availabilities, weekday, start_time, end_time):
 
     return best_start_time, best_end_time
 
+#password hash function
+def hash_password(pw):
+    """Hash a user's password for database storage"""
+    hashed_pw = argon2.hash(pw)
+
+    return hashed_pw
 
 if __name__ == "__main__":
     from server import app
     connect_to_db(app)
-
-
-
-#write a function to pull out the values from a datetime
-# %a for Weekday, short version
-# %A Weekday, full version
-# %h hour 00-12
-# %M minute
-# %S second
-# %p AM/PM

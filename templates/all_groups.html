@@ -9,10 +9,21 @@
             <ul>
             {% for group in all_groups %}
             <li><a href="/groups/{{ group.group_id }}">{{ group.name }}</a></li>
-            <button type="button" id="leave-group" value={{group.group_id}}>Leave this group.</button>
+            <button type="button" class="leave-group" id= {{group.group_id}} value={{group.group_id}}>Leave this group.</button>
             {% endfor %}
             </ul>
         </div>
+    </div>
+    <div class="row">
+        <h2>Past Notifications</h2>
+        <ul>
+            {% for notification in notifications%}
+            {% if notification.group_id %}
+            <li>{{notification.message}}</li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+
     </div>
 </div>
 <script src="/static/js/leaveGroup.js"></script>

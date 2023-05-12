@@ -20,7 +20,7 @@ for n in range(10):
     fname = f'Tester{n}'
     lname = f'McTester{n}'
     email = f'user{n}@test.com'
-    password = 'test'
+    password = crud.hash_password('test')
 
     new_user = crud.create_user(fname, lname, email, password)
     model.db.session.add(new_user)

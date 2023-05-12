@@ -6,29 +6,6 @@
     <div class="row">
         <h1>Welcome!</h1>
         <div class="col">
-            <h2>Create an Account</h2>
-            <form action="/create-account" method="POST">
-                <p>
-                    Email <input type="text" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}" required>
-                </p>
-                <p>
-                    Password <input type="password" name="password" required>
-                </p>
-                <p>
-                    First Name <input type="text" name="fname" required>
-                </p>
-                <p>
-                    Last Name <input type="text" name="lname" required>
-                </p>
-                <p>
-                    Phone <input type="text" name="phone" pattern="\d{3}[- ]?\d{3}[- ]?\d{4}">
-                </p>
-                <p>
-                    <input type="submit">
-                </p>
-            </form>
-        </div>
-        <div class="col">
             <h2>Log In</h2>
             <form action="/login" method="POST">
                 <p>
@@ -41,6 +18,7 @@
                     <input type="submit">
                 </p>
             </form>
+            <a href="/new-account">Create New Account</a>
         </div>
     </div>
 </div>

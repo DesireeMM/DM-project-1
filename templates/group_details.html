@@ -11,6 +11,21 @@
                 Created By: {{group_creator.fname}} {{group_creator.lname}}
             </p>
         </div>
+            <h2>Upload New Profile Picture</h2>
+            <form action="/group-pic-data" method="POST" enctype="multipart/form-data">
+                <input type="file" name="group-pic" required>
+                <input type="hidden" name="group-id" value="{{group.group_id}}">
+                <input type="submit">
+            </form>
+            </div>
+            {% if group.group_img %}
+            <div class="container">
+            <div class="col">
+            <h2>Current Group Photo</h2>
+            <img src={{ group.group_img }} class="img-fluid">
+            </div>
+            </div>
+            {% endif %}
         <div class="col">
             <p>
                 Members: 
