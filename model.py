@@ -1,6 +1,7 @@
 """Models for my project."""
 
 from flask_sqlalchemy import SQLAlchemy
+from passlib.hash import argon2
 
 db = SQLAlchemy()
 
@@ -144,6 +145,55 @@ class UserEvent(db.Model):
     def __repr__(self):
 
         return f"<UserEvent id: {self.userevent_id} user: {self.user_id} event: {self.event_id}"
+
+def create_test_data():
+    """Create sample data for testing database"""
+
+    #add in sample data for users
+    hashed_pw = argon2.hash("testing")
+    
+    user1 = User(fname="John", lname="Doe", email="john_doe@test.com", password=hashed_pw)
+    user2 = User(fname="Jane", lname="Doe", email="jane_doe@test.com", password=hashed_pw)
+    user3 = User(fname="Wade", lname="Watts", email="wade_watts@test.com", password=hashed_pw)
+    user4 = User(fname="Helen", lname="Harris", email="helen_harris@test.com", password=hashed_pw)
+
+    db.session.add_all([user1, user2, user3, user4])
+    db.session.commit()
+
+    #add in sample data for groups
+    group1 = Group(created_by=1, name="Sixers")
+    group2 = Group(created_by=3, name="Hunters")
+
+    db.session.add_all([group1, group2])
+    db.session.commit()
+
+    #add in sample events
+    event1 = Event(created_by=2, name="Job Fair")
+    event2 = Event(created_by=3, name="Egg Hunt")
+
+    db.session.add_all([event1, event2])
+    db.session.commit()
+
+    #add users to a group
+    rel1 = UserGroup(user_id=1, group_id=1)
+    rel2 = UserGroup(user_id=2, group_id=1)
+    rel3 = UserGroup(user_id=3, group_id=2)
+    rel4 = UserGroup(user_id=4, group_id=2)
+
+    db.session.add_all([rel1, rel2, rel3, rel4])
+    db.session.commit()
+
+    #add users to an event
+    rel5 = UserEvent(user_id=1, event_id=1)
+    rel6 = UserEvent(user_id=2, event_id=1)
+    rel7 = UserEvent(user_id=3, event_id=2)
+    rel8 = UserEvent(user_id=4, event_id=2)
+
+    db.session.add_all([rel5, rel6, rel7, rel8])
+    db.session.commit()
+
+
+
 
 def connect_to_db(flask_app, db_uri="postgresql:///project_db", echo=False):
     """Function to connect to my project database"""

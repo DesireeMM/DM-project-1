@@ -17,7 +17,7 @@
     <div class="row">
         <h2>Past Notifications</h2>
         <ul>
-            {% for notification in notifications%}
+            {% for notification in current_user.notifications%}
             {% if notification.group_id %}
             <li>{{notification.message}}</li>
             {% endif %}

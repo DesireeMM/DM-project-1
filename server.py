@@ -43,6 +43,7 @@ def user_login():
     user_password = request.form.get("password")
 
     current_user = crud.get_user_by_email(user_email)
+
     if current_user and argon2.verify(user_password, current_user.password):
         session["user_id"] = current_user.user_id
         session["logged_in_email"] = current_user.email
