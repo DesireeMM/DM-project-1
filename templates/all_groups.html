@@ -1,29 +1,89 @@
 {% extends 'base.html' %}
 {% block title %}All Groups for {{current_user.fname}} {% endblock %}
+{% block head %}
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/squares_background.svg");
+        background-repeat: space;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.45;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="row">
-        <div class="col">
+<div class="container-fluid background-div">
+    <div class="all-groups-row-1">
+        <div class="all-groups-col-1">
             <h1>My Groups</h1>
             <ul>
             {% for group in all_groups %}
             <li><a href="/groups/{{ group.group_id }}">{{ group.name }}</a></li>
-            <button type="button" class="leave-group" id= {{group.group_id}} value={{group.group_id}}>Leave this group.</button>
+            <button type="button" class="leave-group btn" id= {{group.group_id}} value={{group.group_id}}>Leave this group</button>
             {% endfor %}
             </ul>
         </div>
+        <div class="all-groups-col-2 carousel-div">
+            <div id="group-photo-carousel" class="carousel slide">
+                <div class="carousel-indicators">
+                    {% for group in all_groups %}
+                        {% if group.group_img %}
+                            {% if loop.index == 1 %}
+                                <button type="button" data-bs-target="#group-photo-carousel" data-bs-slide-to="{{loop.index0}}" class="active" aria-current="true" aria-label="Slide {{loop.index}}"></button>
+                            {% else %}
+                                <button type="button" data-bs-target="#group-photo-carousel" data-bs-slide-to="{{loop.index0}}" aria-label="Slide {{loop.index}}"></button>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="carousel-inner">
+                    {% for group in all_groups %}
+                        {% if group.group_img %}
+                            {% if loop.index == 1 %}
+                                <div class="carousel-item active">
+                                    <img src="{{group.group_img}}" class="d-block w-100" alt="{{group.name}}">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>{{group.name}}</h5>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="carousel-item">
+                                    <img src="{{group.group_img}}" class="d-block w-100" alt="{{group.name}}">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>{{group.name}}</h5>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#group-photo-carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#group-photo-carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="row">
-        <h2>Past Notifications</h2>
-        <ul>
-            {% for notification in current_user.notifications%}
-            {% if notification.group_id %}
-            <li>{{notification.message}}</li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
+    <div class="all-groups-row-2">
+        <div class="col details-div">
+            <h1>Past Notifications</h1>
+                {% for notification in current_user.notifications%}
+                {% if notification.group_id %}
+                <p class="past-notification">{{notification.message}}</p>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 </div>
 <script src="/static/js/leaveGroup.js"></script>

@@ -74,6 +74,21 @@ def add_notification(user_id, message, read_status=False, event_id=None, group_i
 
     return notification
 
+#querying functions for notifications
+def get_group_notifications(group_id):
+    """Get notifications related to a particular group"""
+
+    group_notifications = Notification.query.filter(Notification.group_id == group_id).all()
+
+    return group_notifications
+
+def get_event_notifications(event_id):
+    """Get notifications related to a particular event"""
+
+    event_notifications = Notification.query.filter(Notification.event_id == event_id).all()
+
+    return event_notifications
+
 #querying functions for users
 def get_users():
     """Return a list of all users in the database"""

@@ -10,13 +10,19 @@ document.addEventListener('DOMContentLoaded', function() {
         right: 'timeGridWeek,timeGridDay'
       },
     });
+    const calendarButtons = document.querySelectorAll(".button");
+    for (const button of calendarButtons) {
+      button.classList.add("btn");
+    }
 
     fetch('/api/user-availability')
           .then((response) => response.json())
-          .then((events) => {
-            for (const event of events) {
-              calendar.addEvent(event);
+          .then((availabilities) => {
+            for (const availability of availabilities) {
+              console.log(availability)
+              calendar.addEvent(availability);
             }
+          
             calendar.render();
         })
         

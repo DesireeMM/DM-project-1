@@ -1,0 +1,178 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+}
+
+#login-field {
+    border-radius: 25px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+#new-account-link {
+    text-align:center
+}
+
+.past-notification {
+    color: #805D93
+}
+
+.btn {
+    background-color: #8DE0C6;
+    transition-duration: 0.1s;
+    color:#000000;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.btn:hover {
+    background-color:#805D93;
+    color: #F6F3F3;
+}
+
+.btn-lg {
+    padding: 8px 32px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Josefin Sans', sans-serif;
+    font-weight: 300;
+    color: #805D93;
+    position: relative;
+}
+
+#create-account-field {
+    border-radius: 25px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+input:focus {
+    --bs-focus-ring-color: rgba(128, 93, 147, 0.4);
+}
+
+.flash-msg {
+    color:#8DE0C6;
+    position: relative
+}
+
+.details-div {
+    border-radius: 25px;
+    text-align: left;
+    background-color:rgba(255, 255, 255, 0.75)
+}
+
+.dash-row-1, .settings-row, .all-groups-row-1, .dash-row-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 25px;
+    position: relative;
+    margin: 10px;
+}
+
+.dash-col-1, .settings-col-1, .all-groups-col-1, .dash-avail-col-1 {
+    grid-column: 1/2;
+    grid-row: 1;
+    padding: 10px;
+}
+
+.dash-col-2, .settings-col-2, .all-groups-col-2, .dash-avail-col-2 {
+    grid-column: 2/2;
+    grid-row: 1;
+    padding: 10px;
+}
+
+.dash-row-2 {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 25px;
+    margin: 25px;
+}
+
+.events-row-1, .groups-row-1, .groups-row-2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 25px;
+    position: relative;
+    margin: 10px;
+}
+
+.events-col-1, .groups-col-1 {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 10px;
+    position: relative
+}
+
+.events-col-2, .groups-col-2 {
+    grid-column: 2/3;
+    grid-row: 1;
+    padding: 10px;
+    position: relative;
+    text-align: center
+}
+
+.events-col-3, .groups-col-3 {
+    grid-column: 3/3;
+    grid-row: 1;
+    padding: 10px;
+    position: relative;
+    text-align:center
+}
+
+.create-event-row {
+    background-color:rgba(255, 255, 255, 0.75);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    margin: auto
+}
+
+#group-member-carousel {
+    width: 500px
+}
+
+.search-row {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 25px;
+    margin: 25px;
+}
+
+.avail-cal-row {
+    display: grid;
+    gap: 10px;
+    grid-auto-rows: minmax(100px, auto);
+    background-color: rgba(255, 255, 255, 0.75);
+    border-radius: 25px;
+    position: relative;
+    margin: 10px;
+}
+
+.group-avail {
+    grid-auto-flow: column dense;
+    grid-row: 1;
+    padding: 10px;
+    position: relative
+}
+
+.avail-btn {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+h5 {
+    background-color:rgba(255, 255, 255, 0.75);
+    border-radius: 25px;
+}

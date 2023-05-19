@@ -1,34 +1,80 @@
 {% extends 'base.html' %}
 {% block title %}Create a new event!{% endblock %}
-
+{% block head %}
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/squares_background.svg");
+        background-repeat: space;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.45;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
 {% block body %}
+<div class="background-div">
 <div class="container-fluid">
-    <div class="row">
+    <div class="row create-event-row justify-content-evenly">
         <h1>Create a new event:</h1>
-    </div>
-    <div class="row">
-        <div class="col">
+        <div class="col-6 add-event-form">
             <form action="/add-event" method="POST">
-                <label for="group-select">Which group is this for?</label>
-                <select name="group" id="group-select">
+                <select class="form-select" aria-label="select-group" name="group" id="group-select">
+                    <option selected>Which group is this for?</option>
                     {% for group in poss_groups %}
                     <option value="{{group.group_id}}">{{group.name}}</option>
                     {% endfor %}
                 </select>
-                <br><br>
-                Event Name:<input type="text" name="name" required>
-                <br><br>
-                Event Description:<input type="text" name="description">
-                <br><br>
-                Activity: <input type="text" name="activity">
-                <br><br>
-                Date: <input type="date" name="date">
-                <br><br>
-                Time: <input type="time" name="time">
-                <br><br>
-                <button type="submit">Create Event</button>
+                <br>
+                <div class="form-floating mb-3">
+                    <input type="text" 
+                        class="form-control focus-ring" 
+                        id="floatingName" 
+                        name="name" 
+                        placeholder="Event Name"
+                        required>
+                    <label for="floatingName">Event Name</label>
+                </div>
+                <div class="form-floating">
+                    <input type="text"
+                        class="form-control focus-ring" 
+                        id="floatingDesc" 
+                        name="description" 
+                        placeholder="Event Description">
+                    <label for="floatingDesc">Description</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="text"
+                        class="form-control focus-ring" 
+                        id="floatingAct" 
+                        name="activity" 
+                        placeholder="Event Location">
+                    <label for="floatingAct">Location</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="date"
+                        class="form-control focus-ring" 
+                        id="floatingDate" 
+                        name="date" 
+                        placeholder="Event Date">
+                    <label for="floatingDate">Date</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="time"
+                        class="form-control focus-ring" 
+                        id="floatingTime" 
+                        name="time" 
+                        placeholder="Time">
+                    <label for="floatingTime">Time</label>
+                </div><br>
+                <button type="submit" class="btn">Create Event</button>
             </form>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}

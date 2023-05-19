@@ -65,13 +65,15 @@ def create_new_account():
     """Create a new user account"""
     user_email = request.form.get("email")
     user_password = request.form.get("password")
+    user_pw_confirm = request.form.get("password-confirm")
     user_fname = request.form.get("fname")
     user_lname = request.form.get("lname")
     user_phone = request.form.get("phone", None)
 
     if crud.get_user_by_email(user_email):
         flash("Email already taken. Please try again.")
-
+    elif user_password != user_pw_confirm:
+        flash("Passwords don't match. Please try again.")
     else:
         hashed_pw = crud.hash_password(user_password)
         new_user = crud.create_user(user_fname, user_lname, user_email, hashed_pw, user_phone)
@@ -106,7 +108,7 @@ def view_dashboard():
 
     return render_template("dashboard.html",
                            current_user=current_user,
-                           unread_notifications=unread_notifications,
+                           unread_notifications=reversed(unread_notifications),
                            availabilities=availabilities)
 
 @app.route("/events")
@@ -143,10 +145,11 @@ def show_event(event_id):
     current_user = crud.get_user_by_id(session["user_id"])
 
     return render_template("event_details.html",
-                           event=event,
-                           group_name=group_name,
-                           event_host=event_host,
-                           current_user=current_user)
+                        event=event,
+                        group_name=group_name,
+                        event_host=event_host,
+                        current_user=current_user,)
+
 
 @app.route('/delete-event', methods=["POST"])
 def delete_event():
@@ -158,10 +161,14 @@ def delete_event():
 
     for member in target_event.users:
         notification = crud.add_notification(member.user_id,
-                                             event_id=event_id,
                                              message=f"{target_event.name} has been deleted.",
                                              read_status=False)
         db.session.add(notification)
+        db.session.commit()
+    
+    notifications = crud.get_event_notifications(event_id)
+    for notification in notifications:
+        db.session.delete(notification)
         db.session.commit()
 
     return jsonify({
@@ -295,7 +302,8 @@ def update_event(event_id):
                            best_day=best_day,
                            attendees=attendees,
                            start_time=best_start_time,
-                           end_time=best_end_time)
+                           end_time=best_end_time,
+                           group_id=group_id)
 
 @app.route("/event-updated", methods=["POST"])
 def show_updated_event():
@@ -325,9 +333,9 @@ def show_updated_event():
                       description=desc)
 
     date_str = target_event.datetime.strftime("%m/%d/%Y")
-    time_str = target_event.datetime.strftime("%-I:%M %p")
+    time_str = target_event.datetime.strftime("at %-I:%M %p")
 
-    notification_message = f"{target_event.name} on {date_str} at {time_str} has been updated."
+    notification_message = f"{target_event.name} ({date_str} {time_str}) has been updated."
 
     for user in target_event.users:
         new_notification = crud.add_notification(event_id=target_event_id,
@@ -417,10 +425,14 @@ def delete_group():
 
     for member in members:
         notification = crud.add_notification(member.user_id,
-                                             group_id=group_id,
                                              message=f"{target_group.name} has been deleted.",
                                              read_status=False)
         db.session.add(notification)
+        db.session.commit()
+
+    notifications = crud.get_group_notifications(group_id)
+    for notification in notifications:
+        db.session.delete(notification)
         db.session.commit()
 
     crud.delete_group(group_id)
@@ -464,8 +476,6 @@ def show_group_availability(group_id):
 def get_group_availability():
     """Get availability details for members of a group"""
 
-
-
     members = crud.show_group_members(session["current_group_id"])
     availabilities = crud.create_availability_ref(session["current_group_id"])
     events = []
@@ -481,7 +491,7 @@ def get_group_availability():
             else:
                 attendee_str = attendee
 
-        color = f"rgb(228, 187, 252, {len(attendees)/len(members)})"
+        color = f"rgb(101, 69, 151, {len(attendees)/len(members)})"
 
         events.append({
             "id": weekday,
@@ -622,8 +632,8 @@ def get_availability():
         new_record = {
             "avail_id": record.avail_id,
             "weekday": record.weekday,
-            "start_time": record.start.strftime("%H:%M"),
-            "end_time": record.end.strftime("%H:%M")
+            "start_time": record.start.strftime("%-I:%M %p"),
+            "end_time": record.end.strftime("%-I:%M %p"),
         }
         availabilities.append(new_record)
 
@@ -709,7 +719,9 @@ def get_user_availability():
             "endTime": availability.end.isoformat(),
             "startRecur": datetime.now(),
             "title": availability.weekday,
-            "display": "auto"
+            "display": "auto",
+            "color": '#8DE0C6',
+            "textColor": '#000000'
         })
 
     return jsonify(events)
@@ -772,8 +784,8 @@ def make_user_account_changes():
     new_pass_1 = request.form.get("new-pass-1")
     new_pass_2 = request.form.get("new-pass-2")
 
-    if old_password == current_user.password and new_pass_1 == new_pass_2:
-        current_user.password = new_pass_1
+    if argon2.verify(old_password, current_user.password) and new_pass_1 == new_pass_2:
+        current_user.password = crud.hash_password(new_pass_1)
         db.session.commit()
         flash("Password changed successfully.")
 
@@ -781,7 +793,7 @@ def make_user_account_changes():
         flash("New passwords don't match, please try again.")
         return redirect("/settings")
 
-    elif old_password != current_user.password:
+    elif not argon2.verify(old_password, current_user.password):
         flash("Incorrect password, please try again.")
         return redirect("/settings")
 

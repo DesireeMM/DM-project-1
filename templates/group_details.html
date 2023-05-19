@@ -1,105 +1,123 @@
 {% extends 'base.html' %}
 
 {% block title %} {{ group.name }} - Details {% endblock %}
+{% block head %}
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/squares_background.svg");
+        background-repeat: space;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.45;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid background-div">
     <h1>{{ group.name }}</h1>
-        <div class="col">
+    <div class="groups-row-1 justify-content-evenly align-items-start">
+        <div class="groups-col-1">
+            {% if group.group_img %}
+            <h2>Current Group Photo</h2>
+            <img src={{ group.group_img }} class="img-fluid">
+            {% endif %}
             <p>
                 Created By: {{group_creator.fname}} {{group_creator.lname}}
             </p>
+
         </div>
-            <h2>Upload New Profile Picture</h2>
-            <form action="/group-pic-data" method="POST" enctype="multipart/form-data">
-                <input type="file" name="group-pic" required>
-                <input type="hidden" name="group-id" value="{{group.group_id}}">
-                <input type="submit">
-            </form>
-            </div>
-            {% if group.group_img %}
-            <div class="container">
-            <div class="col">
-            <h2>Current Group Photo</h2>
-            <img src={{ group.group_img }} class="img-fluid">
-            </div>
-            </div>
-            {% endif %}
-            <div class="col">
-                <div id="group-member-carousel" class="carousel slide">
-                    <div class="carousel-indicators">
-                        {% for member in group.users %}
-                            {% if member.user_img %}
-                                {% if loop.index == 1 %}
-                                    <button type="button" data-bs-target="#group-member-carousel" data-bs-slide-to="{{loop.index0}}" class="active" aria-current="true" aria-label="Slide {{loop.index}}"></button>
-                                {% else %}
-                                    <button type="button" data-bs-target="#group-member-carousel" data-bs-slide-to="{{loop.index0}}" aria-label="Slide {{loop.index}}"></button>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <div class="carousel-inner">
-                        {% for member in group.users %}
-                            {% if member.user_img %}
-                                {% if loop.index == 1 %}
-                                    <div class="carousel-item active">
-                                        <img src="{{member.user_img}}" class="d-block w-100" alt="{{member.fname}}">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h5>{{member.fname}} {{member.lname}}</h5>
-                                            <p>Some representative placeholder content for the first slide.</p>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <div class="carousel-item">
-                                        <img src="{{member.user_img}}" class="d-block w-100" alt="{{member.fname}}">
-                                        <div class="carousel-caption d-none d-md-block">
-                                            <h5>{{member.fname}} {{member.lname}}</h5>
-                                            <p>Some representative placeholder content for the slide.</p>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#group-member-carousel" data-bs-slide="prev">
-                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#group-member-carousel" data-bs-slide="next">
-                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                      <span class="visually-hidden">Next</span>
-                    </button>
-                </div>
-        <div class="col">
-            <p>
-                Members: 
-                <ul>
+        <div class="groups-col-2">
+                <h2>Group Members:</h2> 
                     {% for user in members %}
                         <dl>{{user.fname}} {{user.lname}}</dl>
                         <dt>{{user.email}}</dt>
                     {% endfor %}
-                </ul>
-            </p>
-            <p>
-                <form action="/new-group-member", method="POST">
-                    Add a new member to this group:
-                    <input type="text" name="user_email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
-                    <input type="hidden" name="group_id" value="{{group.group_id}}">
-                    <button type="submit">Add</button>
-                </form>
+            <br><br><p>
+                <a href="/groups/{{group.group_id}}/availability" class="btn">View Availability</a>
             </p>
         </div>
-    <p>
-        <a href="/groups/{{group.group_id}}/availability">See this group's availability.</a>
-    </p>
-    {% if current_user.user_id == group_creator.user_id %}
-    <p>
-        <button type="button" id="delete-group">Delete this group.</button>
-        <input type="hidden" id="group_id_num" value={{group.group_id}}>
-    </p>
-    {% endif %}
+        <div class="groups-col-3">
+            <div id="group-member-carousel" class="carousel slide">
+                <div class="carousel-indicators">
+                    {% for member in group.users %}
+                        {% if member.user_img %}
+                            {% if loop.index == 1 %}
+                                <button type="button" data-bs-target="#group-member-carousel" data-bs-slide-to="{{loop.index0}}" class="active" aria-current="true" aria-label="Slide {{loop.index}}"></button>
+                            {% else %}
+                                <button type="button" data-bs-target="#group-member-carousel" data-bs-slide-to="{{loop.index0}}" aria-label="Slide {{loop.index}}"></button>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="carousel-inner">
+                    {% for member in group.users %}
+                        {% if member.user_img %}
+                            {% if loop.index == 1 %}
+                                <div class="carousel-item active">
+                                    <img src="{{member.user_img}}" class="d-block w-100" alt="{{member.fname}}">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>{{member.fname}} {{member.lname}}</h5>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="carousel-item">
+                                    <img src="{{member.user_img}}" class="d-block w-100" alt="{{member.fname}}">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5>{{member.fname}} {{member.lname}}</h5>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#group-member-carousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#group-member-carousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
     </div>
+    {% if current_user.user_id == group_creator.user_id %}
+    <div class="groups-row-2">
+        <div class="groups-col-1">
+            <h2>Upload New Group Photo</h2>
+            <form action="/group-pic-data" method="POST" enctype="multipart/form-data">
+                <input type="file" name="group-pic" required>
+                <input type="hidden" name="group-id" value="{{group.group_id}}">
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </div>
+        <div class="groups-col-2 form-floating mb-3">
+            <form action="/new-group-member", method="POST">
+                <div class="form-floating">
+                <input type="text" 
+                    class="form-control focus-ring"
+                    name="user_email"
+                    id="floatingNewEmail" 
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}"
+                    placeholder="Add New Member">
+                <label for="floatingNewEmail">New Member Email</label>
+                </div><br>
+                <input type="hidden" name="group_id" value="{{group.group_id}}">
+                <button type="submit" class="btn">Add</button>
+            </form>
+        </div>
+        <div class="groups-col-3">
+            <button type="button" id="delete-group" class="btn">Delete this group</button>
+            <input type="hidden" id="group_id_num" value={{group.group_id}}>
+        </div>
+    </div>
+    {% endif %}
 </div>
 <script src="/static/js/deleteGroup.js"></script>
 {% endblock %}

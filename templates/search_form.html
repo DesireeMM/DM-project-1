@@ -2,44 +2,54 @@
 
 {% block title %}Search For Activities{% endblock %}
 {% block head %}
-  <link rel="stylesheet" href="/static/css/maps.css"/>
-
+<style>
+  .background-div::before {
+    content: "";
+    background-image: url("/static/img/squares_background.svg");
+    background-repeat: space;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    opacity: 0.45;
+    z-index: -1;
+  }
+</style>
+<link rel="stylesheet" href="/static/css/maps.css"/>
 {% endblock %}
 {% block body %}
-<div class="container">
-  <div class="row">
+<div class="container background-div">
+  <div class="search-row">
     <div class="col">
-      <h2>Search for Activities</h2>
-        <div class="row">
+      <h1>Search for Activities</h1>
           <label class="form-label above" for="search-keyword">What are you looking for?</label>
-
           <input
             id="search-input"
-            class="form-control"
+            class="form-control focus-ring"
             type="text"
             name="keyword"
             placeholder="Search for restaurants or activities in your area."
-          >
+          ><br>
           <label class="form-label above" for="search-location">Where do you want to search?</label>
           <input
             id="search-location"
-            class="form-control"
+            class="form-control focus-ring"
             type="text"
             name="location"
             placeholder="Enter a location: specific address, just City, State, or zip code."
-          >
+          ><br>
           <label class="form-label above" for="search-radius">What radius are you looking in?</label>
           <input
             id="search-radius"
-            class="form-control"
+            class="form-control focus-ring"
             type="number"
             name="radius"
             max="50000"
             step="1000"
             placeholder="Enter a number in meters (max: 50000m)"
-          >
-        </div>
-        <button type="button" id="search-form">Search</button>
+          ><br>
+        <button type="button" class="btn" id="search-form">Search</button>
     </div>
   </div>
 </div>

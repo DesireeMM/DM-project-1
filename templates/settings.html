@@ -1,36 +1,68 @@
 {% extends 'base.html' %}
 
 {% block title %} Account Settings {% endblock %}
-
+{% block head %}
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/squares_background.svg");
+        background-repeat: space;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: .15;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
 {% block body %}
-<div class="container">
-<h1>{{ current_user.fname }}</h1>
-<div class="container">
-<h2>Change My Password</h2>
-<form action="/user-changes" method="POST">
-Old Password:<input type="password" name="old-password">
-<br><br>
-New Password: <input type="password" name="new-pass-1">
-<br><br>
-Confirm Password: <input type="password" name="new-pass-2">
-<br><br>
-<button type="submit">Change Password</button>
-</form>
-</div>
-<div class="container">
-<h2>Upload New Profile Picture</h2>
-<form action="/user-pic-data" method="POST" enctype="multipart/form-data">
-    <input type="file" name="user-pic" required>
-    <input type="submit">
-</form>
-</div>
-{% if current_user.user_img %}
-<div class="container">
-<div class="col">
-<h2>Current Profile Picture</h2>
-<img src={{ current_user.user_img }} class="img-fluid">
-</div>
-</div>
-{% endif %}
+<div class="container background-div">
+    <div class="settings-row">
+        <div class="settings-col-1">
+            <h1>{{ current_user.fname }}</h1>
+            {% if current_user.user_img %}
+            <h2>Current Profile Picture</h2>
+            <img src={{ current_user.user_img }} class="img-fluid">
+            {% endif %}
+            <h2>Upload New Profile Picture</h2>
+            <form action="/user-pic-data" method="POST" enctype="multipart/form-data">
+                <input type="file" name="user-pic" required>
+                <button type="submit" class="btn">Submit</button>
+            </form>
+        </div>
+        <div class="settings-col-2">
+            <h2>Change My Password</h2>
+            <form action="/user-changes" method="POST">
+                <div class="form-floating mb-3">
+                    <input type="password" 
+                        class="form-control focus-ring" 
+                        id="floatingOldPassword" 
+                        name="old-password" 
+                        placeholder="Current Password"
+                        required>
+                    <label for="floatingOldPassword">Current Password</label>
+                </div>
+            <div class="form-floating">
+                    <input type="password"
+                        class="form-control focus-ring" 
+                        id="floatingNewPassword" 
+                        name="new-pass-1" 
+                        placeholder="New Password">
+                    <label for="floatingNewPassword">New Password</label>
+                </div><br>
+            <div class="form-floating">
+                    <input type="password"
+                        class="form-control focus-ring" 
+                        id="floatingNewPassword2" 
+                        name="new-pass-2" 
+                        placeholder="Confirm Password">
+                    <label for="floatingNewPassword2">Confirm New Password</label>
+                </div><br>
+            <button type="submit" class="btn">Change Password</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

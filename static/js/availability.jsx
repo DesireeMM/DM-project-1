@@ -64,11 +64,17 @@ function AvailabilityRecordContainer() {
     }
 
     return (
-        <React.Fragment>
-            <AddAvailabilityRecord addRecord={addRecord} />
-            <h1>Availability Records</h1>
-            <div className="col">{availRecords}</div>
-        </React.Fragment>
+            <React.Fragment>
+                <div className="dash-row-2">
+                <div className="dash-avail-col-1">
+                    <h2>Availability Records</h2>
+                    {availRecords}
+                </div>
+                <div className="dash-avail-col-2">
+                    <AddAvailabilityRecord addRecord={addRecord} />
+                </div>
+                </div>
+            </React.Fragment>
     )
 }
 
@@ -109,8 +115,8 @@ function AvailabilityRecord(props) {
         <p>To: {endTime} </p>
         </div>
         <div className="avail-update-form">
-            <label htmlFor="weekday-select">Select a day of the week:</label>
-                    <select name="weekday" id="weekday-select" value={weekdayInput} onChange={(event) => setWeekdayInput(event.target.value)}>
+            <label htmlFor="weekday-select">New Weekday? </label>
+                    <select className="form-select" name="weekday" id="weekday-select" value={weekdayInput} onChange={(event) => setWeekdayInput(event.target.value)}>
                         <option value="null">Weekday</option>
                         <option value="monday">Monday</option>
                         <option value="tuesday">Tuesday</option>
@@ -121,19 +127,17 @@ function AvailabilityRecord(props) {
                         <option value="sunday">Sunday</option>
                     </select>
                     <br /><br />
-                    <legend>
-                        Select Start Time:
-                        <input type="time" name="start-time" value={startTimeInput} onChange={(event) => setStartTimeInput(event.target.value)}/>
-                    </legend>
-                    <legend>
-                        Select End Time:
-                        <input type="time" name="end-time" value={endTimeInput} onChange={(event) => setEndTimeInput(event.target.value)}/>
-                    </legend>
+                    Change Start Time: 
+                    <input type="time" name="start-time" value={startTimeInput} onChange={(event) => setStartTimeInput(event.target.value)}/>
+                    <br /><br />
+                    Change End Time: 
+                    <input type="time" name="end-time" value={endTimeInput} onChange={(event) => setEndTimeInput(event.target.value)}/>
+                    <br /><br />
         </div>
-        <button type="button" onClick={() =>
+        <button type="button" className="btn" onClick={() =>
         setFormDisplay(false)}>
             Hide Form</button>
-            <button type="button" onClick={updateAvailabilityRecord}>
+            <button type="button" className="btn" onClick={updateAvailabilityRecord}>
             Make Changes</button>
         </div>
     )}
@@ -143,11 +147,11 @@ function AvailabilityRecord(props) {
         <p>Day of the Week: {weekday}</p>
         <p>From: {startTime}</p>
         <p>To: {endTime} </p>
-        <button type="button" onClick={() =>
+        <button type="button" className="btn avail-btn" onClick={() =>
             setFormDisplay(true)}>
-            Change this record</button>
-        <button type="button" onClick={() => props.deleteAvailabilityRecord(props.availID)}>
-        Delete this record</button>
+            Change record</button>
+        <button type="button" className="btn avail-btn" onClick={() => props.deleteAvailabilityRecord(props.availID)}>
+        Delete record</button>
       </div>
     );
     }
@@ -179,7 +183,7 @@ function AddAvailabilityRecord(props) {
         <React.Fragment>
             <h2>Add New Availability Record</h2>
             <label htmlFor="weekday-select">Select a day of the week:</label>
-                    <select name="weekday" id="weekday-select" value={newWeekday} onChange={(event) => setNewWeekday(event.target.value)}>
+                    <select className="form-select" name="weekday" id="weekday-select" value={newWeekday} onChange={(event) => setNewWeekday(event.target.value)}>
                         <option value="monday">Monday</option>
                         <option value="tuesday">Tuesday</option>
                         <option value="wednesday">Wednesday</option>
@@ -188,16 +192,14 @@ function AddAvailabilityRecord(props) {
                         <option value="saturday">Saturday</option>
                         <option value="sunday">Sunday</option>
                     </select>
+                    <br />
+                    <p>Select Start Time: 
+                    <input type="time" name="start-time" value={newStartTime} onChange={(event) => setNewStartTime(event.target.value)} />
+                    </p><br />
+                    Select End Time:
+                    <input type="time" name="end-time" value={newEndTime} onChange={(event) => setNewEndTime(event.target.value)} />
                     <br /><br />
-                    <legend>
-                        Select Start Time:
-                        <input type="time" name="start-time" value={newStartTime} onChange={(event) => setNewStartTime(event.target.value)} />
-                    </legend>
-                    <legend>
-                        Select End Time:
-                        <input type="time" name="end-time" value={newEndTime} onChange={(event) => setNewEndTime(event.target.value)} />
-                    </legend>
-            <button type="button" onClick={addNewRecord}>Add Record</button>
+            <button type="button" className="btn avail-btn" onClick={addNewRecord}>Add Record</button>
         </React.Fragment>
     )
 }

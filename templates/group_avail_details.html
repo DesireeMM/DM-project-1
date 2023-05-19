@@ -6,25 +6,20 @@ https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js
 "></script>
 {% endblock %}
 {% block body %}
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h1>{{ group.name }}</h1>
-            <p>
-                Created By: {{creator.fname}} {{creator.lname}}
-            </p>
-        </div>
-        <div class="col">
-            <h2>Availability</h2>
-                {% for member in members %}
-                    <dt>{{member.fname}}</dt>
-                    {% for availability in member.availabilities %}
-                        <dd>{{availability.weekday}}: {{availability.start}} to {{availability.end}}</dd>
-                    {% endfor %}
-                {% endfor %}
-        </div>
-    </div>
+<div class="container-fluid">
+    <h1>{{ group.name }}</h1>
 </div>
 <div id="calendar"></div>
+<h2>Availability</h2>
+<div class="avail-cal-row">
+        {% for member in members %}
+            <div class="group-avail">
+                <h4>{{member.fname}}</h4>
+                {% for availability in member.availabilities %}
+                <p>{{availability.weekday}}: {{availability.start}} to {{availability.end}}</p>
+            {% endfor %}
+                </div>
+        {% endfor %}
+</div>
 <script src="/static/js/groupAvailability.js"></script>
 {% endblock %}

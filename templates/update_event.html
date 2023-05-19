@@ -1,45 +1,87 @@
 {% extends 'base.html' %}
 
 {% block title %} {{ event.name }} - Update Details {% endblock %}
+{% block head %}
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/squares_background.svg");
+        background-repeat: space;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: .15;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="container">
-<h1>{{ event.name }}</h1>
-<div class="container">
-<form action="/event-updated" method="POST">
-    <input type="hidden" name="event_id" value="{{event.event_id}}">
-Name:<input type="text" name="new-name">
-<br><br>
-Description: <input type="text" name="new-desc">
-<br><br>
-Activity: <input type="text" name="activity">
-<br><br>
-Date: <input type="date" name="date">
-<br><br>
-Time: <input type="time" name="time">
-<br><br>
-<button type="submit">Make Changes</button>
-</form>
-</div>
-<div class="container">
-<h2>Group Availability Reference</h2>
-{% for weekday, members in availabilities.items() %}
-<dt>{{ weekday }}:</dt>
-{% for member, times in members.items() %}
-<dd>{{member}}: {{times[0]}} to {{times[1]}}</dd>
-{% endfor %}
-{% endfor %}
-</div>
-<div class="container">
-<h2>Best Day and Time</h2>
-<p>From {{start_time}} to {{end_time}} on {{best_day}}</p>
-<p>Works for:
-    <ul>
-    {% for attendee in attendees %}
-    <li>{{attendee}}</li>
-    {% endfor %}
-    </ul>
-</p>
-</div>
+<div class="container background-div">
+    <h1>{{ event.name }}</h1>
+    <div class="row">
+        <div class="col">
+            <h2>Edit This Event</h2>
+            <form action="/event-updated" method="POST">
+                <input type="hidden" name="event_id" value="{{event.event_id}}">
+                <br>
+                <div class="form-floating mb-3">
+                    <input type="text" 
+                        class="form-control focus-ring" 
+                        id="floatingName" 
+                        name="new-name" 
+                        placeholder="Change Event Name">
+                    <label for="floatingName">Event Name</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="text"
+                        class="form-control focus-ring" 
+                        id="floatingDesc" 
+                        name="new-desc" 
+                        placeholder="Event Description">
+                    <label for="floatingDesc">Description</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="text"
+                        class="form-control focus-ring" 
+                        id="floatingAct" 
+                        name="activity" 
+                        placeholder="Event Location">
+                    <label for="floatingAct">Location</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="date"
+                        class="form-control focus-ring" 
+                        id="floatingDate" 
+                        name="date" 
+                        placeholder="Event Date">
+                    <label for="floatingDate">Date</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="time"
+                        class="form-control focus-ring" 
+                        id="floatingTime" 
+                        name="time" 
+                        placeholder="Time">
+                    <label for="floatingTime">Time</label>
+                </div><br>
+            <button type="submit" class="btn">Make Changes</button>
+        </form>
+        </div>
+        <div class="col">
+            <h2>Best Day and Time</h2>
+            <p>From {{start_time}} to {{end_time}} on {{best_day}}</p>
+            <p>Works for:
+                <ul>
+                {% for attendee in attendees %}
+                <li>{{attendee}}</li>
+                {% endfor %}
+                </ul>
+            </p>
+            <a href="/groups/{{group_id}}/availability" class="btn">View Full Availability</a>
+        </div>
+    </div>
 </div>
 {% endblock %}

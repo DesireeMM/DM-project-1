@@ -1,12 +1,32 @@
 {% extends 'base.html' %}
 
 {% block title %} {{ event.name }} - Details {% endblock %}
+{% block head %}
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/squares_background.svg");
+        background-repeat: space;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.45;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <div class="row">
-        <h1>{{ event.name }}</h1>
-        <div class="col">
+<div class="background-div">
+<div class="container-fluid text-center">
+    <br><br>
+    <div class="row justify-content-evenly align-items-center">
+        <div class="col-6 details-div text-center">
+            <br><br>
+            <div class="justify-content-left">
+            <h1>{{ event.name }}</h1>
             <p>
                 Hosted By: {{event_host.fname}} {{event_host.lname}}
             </p>
@@ -17,21 +37,25 @@
                 Description: {{event.description}}
             </p>      
             <p>
-                Date/Time: {{event.datetime}}
+                Date/Time: {% if event.datetime %}{{event.datetime.strftime("%B %-d, %Y at %-I:%M %p")}}
+                {% else %} Not Yet Scheduled {% endif %}
             </p>
             <p>
-                Activity: {{event.activity}}
+                Location: {{event.activity}}
             </p>
+            <br>
+            {% if current_user.user_id == event_host.user_id %}
+            <a href="/update-event/{{event.event_id}}" class="btn">Update this event</a>
+            <br><br>
+        <p>
+            <button type="button" class="btn" id="delete-event">Delete this event</button>
+            <input type="hidden" id="event_id_num" value={{event.event_id}}>
+        </p><br><br>
+        {% endif %}
+            </div>
         </div>
-        <a href="/update-event/{{event.event_id}}">Update this event</a>
-        <br><br>
-        {% if current_user.user_id == event_host.user_id %}
-    <p>
-        <button type="button" id="delete-event">Delete this event.</button>
-        <input type="hidden" id="event_id_num" value={{event.event_id}}>
-    </p>
-    {% endif %}
     </div>
 </div>
 <script src="/static/js/deleteEvent.js"></script>
+</div>
 {% endblock %}

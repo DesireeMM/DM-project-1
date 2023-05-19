@@ -1,51 +1,66 @@
 {% extends 'base.html' %}
 {% block title %}All Events for {{current_user.fname}} {% endblock %}
-
+{% block head %}
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/squares_background.svg");
+        background-repeat: space;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.45;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
 {% block body %}
+<div class="background-div">
 <div class="container-fluid">
-    <div class="row align-items-start">
-        <div class="col">
-            <h2>Upcoming Events</h2>
-            <ul>
+    <br><br>
+    <div class="events-row-1 align-items-start">
+        <div class="events-col-1 details-div">
+            <h1>Upcoming</h1>
             {% for event in all_events %}
                 {% if event.datetime and event.datetime > current_datetime %}
-                <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
-                <button type="button" class="leave-event" id="{{event.event_id}}" value="{{event.event_id}}">I can't make this event.</button>
+                <p><a href="/events/{{ event.event_id }}">{{ event.name }}</a></p>
+                <button type="button" class="leave-event btn" id="{{event.event_id}}" value="{{event.event_id}}">Unable to attend</button>
+                <br><br><br>
                 {% endif %}
             {% endfor %}
         </div>
-        <div class="col">
-            <h2>Events Not Yet Scheduled</h2>
-            <ul>
+        <div class="events-col-2 details-div">
+            <h1>Not Yet Scheduled</h1>
             {% for event in all_events %}
                 {% if not event.datetime %}
-                <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
+                <p><a href="/events/{{ event.event_id }}">{{ event.name }}</a></p>
                 {% endif %}
             {% endfor %}
-            </ul>
         </div>
-        <div class="col">
-            <h2>Past Events</h2>
-            <ul>
+        <div class="events-col-3 details-div">
+            <h1>Past Events</h1>
             {% for event in all_events %}
                 {% if event.datetime and event.datetime < current_datetime %}
-                <li><a href="/events/{{ event.event_id }}">{{ event.name }}</a></li>
+                <p><a href="/events/{{ event.event_id }}">{{ event.name }}</a></p>
                 {% endif %}
             {% endfor %}
-            </ul>
         </div>
     </div>
-    <div class="row">
-        <h2>Past Notifications</h2>
-        <ul>
-            {% for notification in notifications%}
-            {% if notification.event_id %}
-            <li>{{notification.message}}</li>
-            {% endif %}
-            {% endfor %}
-        </ul>
-
+    <div class="row justify-content-evenly">
+        <div class="col-6 details-div text-center">
+            <br><br>
+            <h1>Past Notifications</h1>
+                {% for notification in notifications%}
+                {% if notification.event_id %}
+                <p class="past-notification">{{notification.message}}</p>
+                {% endif %}
+                {% endfor %}
+            <br><br>
+        </div>
     </div>
 </div>
 <script src="/static/js/leaveEvent.js"></script>
+</div>
 {% endblock %}

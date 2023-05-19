@@ -1,30 +1,81 @@
 {% extends 'base.html' %}
 {% block title %}Create an Account{% endblock %}
-{% block head %}{% endblock %}
+{% block head%} 
+<style>
+    body {
+        background: url("/static/img/create_account.jpg") no-repeat;
+        background-size: cover;
+    }
+</style>
+{% endblock %}
 {% block body %}
 <div class="container-fluid">
-    <div class="row">
-        <h1>Create an Account</h1>
-        <div class="col">
+    <br><br>
+    <div class="row justify-content-evenly">
+        <div class="col-8" id="create-account-field">
+            <br><br>
+            <h1>Create an account</h1>
+            <br>
             <form action="/create-account" method="POST">
+                <div class="form-floating mb-3">
+                    <input type="text" 
+                        class="form-control focus-ring" 
+                        id="floatingEmail" 
+                        name="email" 
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}" 
+                        placeholder="Email Address"
+                        required>
+                    <label for="floatingEmail">Email Address</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password"
+                        class="form-control focus-ring" 
+                        id="floatingPassword" 
+                        name="password" 
+                        placeholder="Password"
+                        required>
+                    <label for="floatingPassword">Password</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="password"
+                        class="form-control focus-ring" 
+                        id="floatingPasswordConfirm" 
+                        name="password-confirm" 
+                        placeholder="Password"
+                        required>
+                    <label for="floatingPasswordConfirm">Confirm Password</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="text"
+                        class="form-control focus-ring" 
+                        id="floatingFName" 
+                        name="fname" 
+                        placeholder="First Name"
+                        required>
+                    <label for="floatingFName">First Name</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="text"
+                        class="form-control focus-ring" 
+                        id="floatingLName" 
+                        name="lname" 
+                        placeholder="Last Name"
+                        required>
+                    <label for="floatingLName">Last Name</label>
+                </div><br>
+                <div class="form-floating">
+                    <input type="text"
+                        class="form-control focus-ring" 
+                        id="floatingPhone" 
+                        name="phone"
+                        pattern="\d{3}[- ]?\d{3}[- ]?\d{4}" 
+                        placeholder="Phone Number (optional)">
+                    <label for="floatingPhone">Phone Number</label>
+                </div><br>
                 <p>
-                    Email <input type="text" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}" required>
+                    <button type="submit" class="btn btn-lg">Let's Chill</button>
                 </p>
-                <p>
-                    Password <input type="password" name="password" required>
-                </p>
-                <p>
-                    First Name <input type="text" name="fname" required>
-                </p>
-                <p>
-                    Last Name <input type="text" name="lname" required>
-                </p>
-                <p>
-                    Phone <input type="text" name="phone" pattern="\d{3}[- ]?\d{3}[- ]?\d{4}">
-                </p>
-                <p>
-                    <input type="submit">
-                </p>
+                <br><br>
             </form>
         </div>
 {% endblock %}
