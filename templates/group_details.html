@@ -45,7 +45,7 @@
         <div class="groups-col-3">
             <div id="group-member-carousel" class="carousel slide">
                 <div class="carousel-indicators">
-                    {% for member in group.users %}
+                    {% for member in group.users|sort(attribute='user_id') %}
                         {% if member.user_img %}
                             {% if loop.index == 1 %}
                                 <button type="button" data-bs-target="#group-member-carousel" data-bs-slide-to="{{loop.index0}}" class="active" aria-current="true" aria-label="Slide {{loop.index}}"></button>
@@ -56,7 +56,7 @@
                     {% endfor %}
                 </div>
                 <div class="carousel-inner">
-                    {% for member in group.users %}
+                    {% for member in group.users|sort(attribute='user_id') %}
                         {% if member.user_img %}
                             {% if loop.index == 1 %}
                                 <div class="carousel-item active">

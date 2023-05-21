@@ -4,9 +4,7 @@ body {
 }
 
 #login-field {
-    border-radius: 25px;
     text-align: center;
-    background-color: rgba(255, 255, 255, 0.9);
 }
 
 #new-account-link {
@@ -45,9 +43,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #create-account-field {
-    border-radius: 25px;
     text-align: center;
-    background-color: rgba(255, 255, 255, 0.9);
 }
 
 input:focus {
@@ -56,7 +52,9 @@ input:focus {
 
 .flash-msg {
     color:#8DE0C6;
-    position: relative
+    position: relative;
+    text-align: center;
+    font-size:larger
 }
 
 .details-div {
@@ -70,7 +68,6 @@ input:focus {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     grid-auto-rows: minmax(100px, auto);
-    background-color: rgba(255, 255, 255, 0.75);
     border-radius: 25px;
     position: relative;
     margin: 10px;
@@ -90,7 +87,6 @@ input:focus {
 
 .dash-row-2 {
     position: relative;
-    background-color: rgba(255, 255, 255, 0.75);
     border-radius: 25px;
     margin: 25px;
 }
@@ -130,8 +126,6 @@ input:focus {
 }
 
 .create-event-row {
-    background-color:rgba(255, 255, 255, 0.75);
-    border-radius: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -175,4 +169,30 @@ input:focus {
 h5 {
     background-color:rgba(255, 255, 255, 0.75);
     border-radius: 25px;
+}
+
+a {
+    color:#000000;
+    text-decoration: none
+}
+
+a:hover {
+    color:#8DE0C6;
+    font-weight:500
+}
+
+.user-prof-img {
+    height: auto;
+    width: auto
+}
+
+#group-member-carousel {
+    padding-bottom: 20px;
+    margin: auto;
+    width: 50%;
+    height: 50%
+}
+
+#group-member-carousel img {
+    height: 390px;
 }

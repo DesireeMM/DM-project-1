@@ -2,13 +2,22 @@
 {% block title %}Create an Account{% endblock %}
 {% block head%} 
 <style>
-    body {
-        background: url("/static/img/create_account.jpg") no-repeat;
-        background-size: cover;
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/gathering.svg");
+        background-repeat: no-repeat;
+        background-position: bottom center;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        z-index: -1;
     }
 </style>
 {% endblock %}
 {% block body %}
+<div class="background-div">
 <div class="container-fluid">
     <br><br>
     <div class="row justify-content-evenly">
@@ -78,4 +87,5 @@
                 <br><br>
             </form>
         </div>
+    </div>
 {% endblock %}

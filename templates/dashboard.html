@@ -7,14 +7,14 @@
 <style>
     .background-div::before {
         content: "";
-        background-image: url("/static/img/squares_background.svg");
-        background-repeat: space;
-        position: absolute;
+        background-image: url("/static/img/catching_up.svg");
+        background-repeat: no-repeat;
+        background-position: bottom right;
+        position: fixed;
         top: 0px;
         right: 0px;
         bottom: 0px;
         left: 0px;
-        opacity: 0.25;
         z-index: -1;
     }
 </style>
@@ -22,7 +22,6 @@
 
 {% block body %}
 <div class="background-div">
-    <br><br>
     <h1>Hello {{current_user.fname}}!</h1>
     <div class="container-fluid">
         <div class="row">
@@ -42,19 +41,16 @@
         <div class="dash-row-1">
             <div class="dash-col-1">
                 <h2>My Events</h2>
-                    <ul>
                     {% for event in current_user.events %}
-                        <li><a href="/events/{{event.event_id}}" class="link-offset-2 link-offset-1-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{event.name}}</a></li>
+                    <div class="user-event-link"><a href="/events/{{event.event_id}}">{{event.name}}</a></div>
                     {% endfor %}
                     </ul>
             </div>
             <div class="dash-col-2">
                 <h2>My Groups</h2>
-                <ul>
                     {% for group in current_user.groups %}
-                    <li><a href="/groups/{{group.group_id}}" class="link-offset-2 link-offset-1-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">{{group.name}}</a></li>
+                    <div class="user-group-link"><a href="/groups/{{group.group_id}}">{{group.name}}</a></div>
                     {% endfor %}
-                </ul>
             </div>
     </div>
     </div>

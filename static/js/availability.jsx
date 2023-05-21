@@ -134,10 +134,10 @@ function AvailabilityRecord(props) {
                     <input type="time" name="end-time" value={endTimeInput} onChange={(event) => setEndTimeInput(event.target.value)}/>
                     <br /><br />
         </div>
-        <button type="button" className="btn" onClick={() =>
+        <button type="button" className="btn avail-btn" onClick={() =>
         setFormDisplay(false)}>
             Hide Form</button>
-            <button type="button" className="btn" onClick={updateAvailabilityRecord}>
+            <button type="button" className="btn avail-btn" onClick={updateAvailabilityRecord}>
             Make Changes</button>
         </div>
     )}

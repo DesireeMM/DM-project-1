@@ -5,14 +5,15 @@
 <style>
     .background-div::before {
         content: "";
-        background-image: url("/static/img/squares_background.svg");
-        background-repeat: space;
-        position: absolute;
+        background-image: url("/static/img/friends_together.svg");
+        background-repeat: no-repeat;
+        background-position: bottom right;
+        position: fixed;
         top: 0px;
         right: 0px;
         bottom: 0px;
         left: 0px;
-        opacity: .15;
+        opacity: 1;
         z-index: -1;
     }
 </style>
@@ -24,7 +25,9 @@
             <h1>{{ current_user.fname }}</h1>
             {% if current_user.user_img %}
             <h2>Current Profile Picture</h2>
+            <div class="user-prof-img">
             <img src={{ current_user.user_img }} class="img-fluid">
+            </div>
             {% endif %}
             <h2>Upload New Profile Picture</h2>
             <form action="/user-pic-data" method="POST" enctype="multipart/form-data">
