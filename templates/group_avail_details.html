@@ -4,8 +4,24 @@
 {% block head %}<script src="
 https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js
 "></script>
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/yellow_squares.svg");
+        background-repeat: space;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.25;
+        z-index: -1;
+    }
+</style>
 {% endblock %}
 {% block body %}
+<div class="background-div">
+    <br><br><br>
 <div class="container-fluid">
     <h1>{{ group.name }}</h1>
 </div>
@@ -20,6 +36,7 @@ https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js
             {% endfor %}
                 </div>
         {% endfor %}
+</div>
 </div>
 <script src="/static/js/groupAvailability.js"></script>
 {% endblock %}

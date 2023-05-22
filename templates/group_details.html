@@ -5,7 +5,7 @@
 <style>
     .background-div::before {
         content: "";
-        background-image: url("/static/img/squares_background.svg");
+        background-image: url("/static/img/yellow_squares.svg");
         background-repeat: space;
         position: absolute;
         top: 0px;
@@ -19,13 +19,17 @@
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid background-div">
+<div class="background-div">
+<div class="container-fluid">
+    <br><br><br>
     <h1>{{ group.name }}</h1>
     <div class="groups-row-1 justify-content-evenly align-items-start">
         <div class="groups-col-1">
             {% if group.group_img %}
             <h2>Current Group Photo</h2>
-            <img src={{ group.group_img }} class="img-fluid">
+            <div class="group-photo-div">
+                <img src={{ group.group_img }} class="img-fluid">
+            </div>
             {% endif %}
             <p>
                 Created By: {{group_creator.fname}} {{group_creator.lname}}
@@ -33,16 +37,17 @@
 
         </div>
         <div class="groups-col-2">
-                <h2>Group Members:</h2> 
+                <h2>Member Contacts:</h2> 
                     {% for user in members %}
-                        <dl>{{user.fname}} {{user.lname}}</dl>
-                        <dt>{{user.email}}</dt>
+                        <h5>{{user.fname}} {{user.lname}}</h5>
+                        <p>{{user.email}}</p>
                     {% endfor %}
             <br><br><p>
                 <a href="/groups/{{group.group_id}}/availability" class="btn">View Availability</a>
             </p>
         </div>
         <div class="groups-col-3">
+            <h2>Group Members</h2>
             <div id="group-member-carousel" class="carousel slide">
                 <div class="carousel-indicators">
                     {% for member in group.users|sort(attribute='user_id') %}
@@ -118,6 +123,7 @@
         </div>
     </div>
     {% endif %}
+</div>
 </div>
 <script src="/static/js/deleteGroup.js"></script>
 {% endblock %}

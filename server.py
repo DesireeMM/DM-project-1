@@ -47,7 +47,6 @@ def user_login():
     if current_user and argon2.verify(user_password, current_user.password):
         session["user_id"] = current_user.user_id
         session["logged_in_email"] = current_user.email
-        flash(f"Welcome, {current_user.fname}!")
         return redirect("/dashboard")
 
     else:
@@ -211,6 +210,23 @@ def create_event():
                            current_user_id=current_user_id,
                            poss_groups=poss_groups)
 
+# @app.route('/api/group-members', methods=["POST"])
+# def display_group_members():
+#     """Display group member checklist on create event form"""
+    
+#     group_id = request.json.get("group_id")
+
+#     group_members = crud.show_group_members(group_id)
+
+#     members = []
+#     for member in group_members:
+#         members.append({
+#             "id": member.user_id,
+#             "name": member.fname,
+#             })
+
+#     return jsonify(members)
+
 @app.route('/add-event', methods=["POST"])
 def add_event():
     """Add event to database"""
@@ -295,14 +311,16 @@ def update_event(event_id):
                                                          best_day,
                                                          start_time,
                                                          end_time)
+    start_formatted = best_start_time.strftime("%-I:%M %p")
+    end_formatted= best_end_time.strftime("%-I:%M %p")
 
     return render_template("update_event.html",
                            event=target_event,
                            availabilities=availabilities,
                            best_day=best_day,
                            attendees=attendees,
-                           start_time=best_start_time,
-                           end_time=best_end_time,
+                           start_time=start_formatted,
+                           end_time=end_formatted,
                            group_id=group_id)
 
 @app.route("/event-updated", methods=["POST"])
@@ -394,11 +412,16 @@ def view_groups():
         return redirect("/")
     else:
         all_groups = crud.show_user_groups(current_user_id)
+        group_photos = []
+        for group in all_groups:
+            if group.group_img:
+                group_photos.append(group)
 
 
     return render_template("all_groups.html",
                            all_groups=all_groups,
-                           current_user=current_user)
+                           current_user=current_user,
+                           group_photos=group_photos)
 
 @app.route("/groups/<group_id>")
 def show_group(group_id):
@@ -491,7 +514,7 @@ def get_group_availability():
             else:
                 attendee_str = attendee
 
-        color = f"rgb(101, 69, 151, {len(attendees)/len(members)})"
+        color = f"rgb(192, 225, 234, {len(attendees)/len(members)})"
 
         events.append({
             "id": weekday,
@@ -720,7 +743,7 @@ def get_user_availability():
             "startRecur": datetime.now(),
             "title": availability.weekday,
             "display": "auto",
-            "color": '#8DE0C6',
+            "color": '#C0E1EA',
             "textColor": '#000000'
         })
 

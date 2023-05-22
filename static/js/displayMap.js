@@ -34,7 +34,6 @@ function initMap() {
                 <li><b>Name: </b>${searchResults['results'][resultIndex]['name']}</li>
                 <li><b>Location: </b>${searchResults['results'][resultIndex]['geometry']['location']['lat']}, 
                 ${searchResults['results'][resultIndex]['geometry']['location']['lng']}</li>
-                <li><b>Address: </b> ${searchResults['results']['formatted_address']}
               </ul>
             </div>
           `;

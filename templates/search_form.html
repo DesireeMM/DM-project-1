@@ -7,7 +7,7 @@
     content: "";
     background-image: url("/static/img/yellow_squares.svg");
     background-repeat: space;
-    position: absolute;
+    position: fixed;
     top: 0px;
     right: 0px;
     bottom: 0px;
@@ -19,7 +19,9 @@
 <link rel="stylesheet" href="/static/css/maps.css"/>
 {% endblock %}
 {% block body %}
-<div class="container background-div">
+<div class="background-div">
+  <br><br><br>
+<div class="container">
   <div class="search-row">
     <div class="col">
       <h1>Search for Activities</h1>
@@ -52,6 +54,7 @@
         <button type="button" class="btn" id="search-form">Search</button>
     </div>
   </div>
+</div>
 </div>
 <section class="map">
   <div id="map"></div>

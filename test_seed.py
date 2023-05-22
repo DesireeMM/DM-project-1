@@ -24,6 +24,17 @@ for n in range(10):
 
     new_user = crud.create_user(fname, lname, email, password)
     model.db.session.add(new_user)
+
+#creating users for demo video
+password = crud.hash_password('test')
+goose = crud.create_user("Goose", "Lim", "goose_lim@test.com", password)
+pablo = crud.create_user("Pablo", "Wang", "pablo_wang@test.com", password)
+mocha = crud.create_user("Mocha", "Lee", "mocha_lee@test.com", password)
+arthur = crud.create_user("Arthur", "Morgan", "arthur_morgan@test.com", password)
+jojimon = crud.create_user("Joji", "Mon", "jojimon@test.com", password)
+moody = crud.create_user("Moody", "Girl", "moodygirl@test.com", password)
+two = crud.create_user("Two", "PointOh", "twopointoh@test.com", password)
+model.db.session.add_all([goose, pablo, mocha, arthur, jojimon, moody, two])
 model.db.session.commit()
 
 #create some groups
@@ -46,27 +57,27 @@ model.db.session.add_all([event1, event2, event3, event4])
 model.db.session.commit()
 
 
-#assign users to their groups
+# #assign users to their groups
 all_users = crud.get_users()
 
-for user in all_users:
-    if user.user_id <= 5:
-        crud.add_user(user.email, 1)
-    if user.user_id > 5:
-        crud.add_user(user.email, 2)
-    if 3 < user.user_id <= 8:
-        crud.add_user(user.email, 3)
+# for user in all_users:
+#     if user.user_id <= 5:
+#         crud.add_user(user.email, 1)
+#     if user.user_id > 5:
+#         crud.add_user(user.email, 2)
+#     if 3 < user.user_id <= 8:
+#         crud.add_user(user.email, 3)
 
-#assign events to test users
-for user in all_users:
-    for group in user.groups:
-        if group.group_id == 1:
-            crud.add_event(user.email, 1)
-        if group.group_id == 2:
-            crud.add_event(user.email, 2)
-            crud.add_event(user.email, 3)
-        if group.group_id == 3:
-            crud.add_event(user.email, 4)
+# #assign events to test users
+# for user in all_users:
+#     for group in user.groups:
+#         if group.group_id == 1:
+#             crud.add_event(user.email, 1)
+#         if group.group_id == 2:
+#             crud.add_event(user.email, 2)
+#             crud.add_event(user.email, 3)
+#         if group.group_id == 3:
+#             crud.add_event(user.email, 4)
 
 #adding availabilities
 weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]

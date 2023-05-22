@@ -12,11 +12,11 @@ body {
 }
 
 .past-notification {
-    color: #805D93
+    color: #1D7874
 }
 
 .btn {
-    background-color: #8DE0C6;
+    background-color: #C0E1EA;
     transition-duration: 0.1s;
     color:#000000;
     font-family: 'Montserrat', sans-serif;
@@ -27,7 +27,7 @@ body {
 }
 
 .btn:hover {
-    background-color:#805D93;
+    background-color:#D81E5B;
     color: #F6F3F3;
 }
 
@@ -38,7 +38,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Josefin Sans', sans-serif;
     font-weight: 300;
-    color: #805D93;
+    color: #D81E5B;
     position: relative;
 }
 
@@ -47,20 +47,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 input:focus {
-    --bs-focus-ring-color: rgba(128, 93, 147, 0.4);
+    --bs-focus-ring-color: rgba(29, 120, 116, 0.4);
 }
 
 .flash-msg {
-    color:#8DE0C6;
-    position: relative;
+    color:#1D7874;
     text-align: center;
-    font-size:larger
-}
-
-.details-div {
-    border-radius: 25px;
-    text-align: left;
-    background-color:rgba(255, 255, 255, 0.75)
 }
 
 .dash-row-1, .settings-row, .all-groups-row-1, .dash-row-2 {
@@ -83,6 +75,7 @@ input:focus {
     grid-column: 2/2;
     grid-row: 1;
     padding: 10px;
+    position: relative
 }
 
 .dash-row-2 {
@@ -166,7 +159,7 @@ input:focus {
     margin-right: 5px;
 }
 
-h5 {
+h5, .details-div {
     background-color:rgba(255, 255, 255, 0.75);
     border-radius: 25px;
 }
@@ -177,7 +170,7 @@ a {
 }
 
 a:hover {
-    color:#8DE0C6;
+    color:#1D7874;
     font-weight:500
 }
 
@@ -195,4 +188,22 @@ a:hover {
 
 #group-member-carousel img {
     height: 390px;
+}
+
+.group-photo-div {
+    padding-bottom: 20px;
+    margin: auto;
+    width: 75%;
+    height: 75%
+}
+
+.fixed-top {
+    position: fixed;
+}
+
+#logo {
+    padding-bottom: 20px;
+    margin: auto;
+    width: 25%;
+    height: 35%
 }

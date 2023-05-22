@@ -20,11 +20,14 @@ https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js
 <link rel="stylesheet" href="/static/css/calendar.css">
 {% endblock %}
 {% block body %}
-    <div class="container-fluid background-div">
+<div class="background-div">
+    <div class="container-fluid">
+        <br><br><br>
         <div class="row justify-content-center">
             <h1>Availability Calendar</h1>
+            <div class="col-10 vh-100" id="calendar" style="background-color: rgba(255, 255, 255, 0.4)"></div>
+            <script src="/static/js/userAvailability.js"></script>
         </div>
     </div>
-    <div id="calendar" style="background-color: rgba(255, 255, 255, 0.4)"></div>
-    <script src="/static/js/userAvailability.js"></script>
+</div>
 {% endblock %}
