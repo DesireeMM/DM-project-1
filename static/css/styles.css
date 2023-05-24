@@ -56,7 +56,7 @@ input:focus {
     font-size: larger
 }
 
-.dash-row-1, .settings-row, .all-groups-row-1, .dash-row-2 {
+.dash-row-1, .settings-row, .all-groups-row-1, .dash-row-2, .about-row-3 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -66,7 +66,7 @@ input:focus {
     margin: 10px;
 }
 
-.dash-col-1, .settings-col-1, .all-groups-col-1, .dash-avail-col-1 {
+.dash-col-1, .settings-col-1, .all-groups-col-1, .dash-avail-col-1, .about-r3-c1 {
     grid-column: 1/2;
     grid-row: 1;
     padding: 10px;
@@ -77,6 +77,13 @@ input:focus {
     grid-row: 1;
     padding: 10px;
     position: relative
+}
+
+.about-r3-c2 {
+    grid-column: 2/2;
+    grid-row: 1;
+    padding: 10px;
+    justify-content: center
 }
 
 .dash-row-2 {
@@ -203,4 +210,20 @@ a:hover {
     margin: auto;
     width: 25%;
     height: 35%
+}
+
+#self-photo {
+    border-radius:50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color:#C0E1EA;
+    width: 50%;
+}
+
+#self-photo:hover {
+    border-color: #D81E5B;
+}
+
+.accordion-button {
+    background-color:#C0E1EA;
 }

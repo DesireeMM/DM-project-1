@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block title %}About Us {% endblock %}
+{% block head %}
+<style>
+    .background-div::before {
+        content: "";
+        background-image: url("/static/img/yellow_squares.svg");
+        background-repeat: round;
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        opacity: 0.3;
+        z-index: -1;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="background-div">
+    <div class="container-fluid">
+        <div class="about-row-1 text-center">
+            <img src="/static/img/wtc_logo_no_bg.png" class="img-fluid" id="logo">
+            <h1 style="color:#72B3E7; font-weight:bold">WHEN TO CHILL</h1>
+            <br>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-8 text-center">
+                <h3>You're busy, we get it. Us, too.</h3>
+                <p>When To Chill makes navigating adult friendships a little easier by allowing you to set your regular 
+                    availability for the whole group to see. Plan events with a few simple clicks for a date and time you 
+                    know works for your crew. No need to spam the group chat to know when to chill.</p>
+            </div>
+        </div>
+        <br><br><br>
+        <div class="about-accordion">
+            <h3 class="text-center">How to use When To Chill</h3>
+            <div class="accordion" id="how-to-guide">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    Managing Your Account
+                  </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#how-to-guide">
+                  <div class="accordion-body">
+                      <h5>Creating An Account</h5>
+                      <p>Enter your <em>email, first name, last name,</em> and a <em>password</em>. If you like, you can opt to add a phone number.<br>
+                        If your email is already associated with an account, you won't be able to create a second one.<br>
+                        Password security is managed with argon2 hashing, but to protect yourself from security breaches, we suggest using a password unique to this site.</p>
+                      <p>Once you've created an account, you'll be redirected back to the homepage to login.</p>
+                      <h5>Changing Your Password</h5>
+                      <p>You can change your password by using the form on the <a href="/settings">My Account Settings</a> page. 
+                        Please make sure your new password matches in both fields before clicking <strong><em>Change Password.</em></strong></p>
+                  </div>
+                </div>
+              </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Availability Records
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#how-to-guide">
+                    <div class="accordion-body">
+                        <h5>Adding</h5>
+                        <p>From your <a href="/dashboard">dashboard</a>, locate the dropdown menus under <strong><em>Add New Availability Record</em></strong>.
+                        Select a day of the week, a start time, and an end time for your availability.
+                        <em>Note that this app works best if your time blocks start and end on the hour or half hour.</em></p>
+                        <h5>Updating</h5>
+                        <ol>
+                            <li>Click the <strong><em>Change Record</em></strong> button under the availability record you'd like to edit.
+                            <ul><li>Alternatively, you can delete the record entirely by clicking <strong><em>Delete Record</em></strong> and confirming your action.</li></ul></li>
+                            <li>Make changes using the dropdown menu that appears.</li>
+                            <li>Click the <strong><em>Make Changes</em></strong> button to save your edits.</li>
+                        </ol>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      Groups
+                    </button>
+                  </h2>
+                  <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#how-to-guide">
+                    <div class="accordion-body">
+                      <h5>Creating</h5>
+                      <ol>
+                        <li>Navigate to the <a href="/create-group">Create New Group</a> page.</li>
+                        <li>Add in a <em>Group Name</em> -- this is what will display on users' dashboards.</li>
+                        <li>Click the <strong><em>Add Another Member</em></strong>button to display a field for other users' email addresses.
+                        <ul><li>You can add members to a group later from the group's homepage as well.</li></ul></li>
+                        <li>Click the <strong><em>Create Group</em></strong> button when satisfied with the fields.</li>
+                      </ol>
+                      <h5>Updating</h5>
+                      <p>Newly created events will show up on your dashboard or on your <a href="/groups">My Groups</a> page. For groups you have created, you have the option of:
+                    <ul>
+                        <li>Uploading a group photo</li>
+                        <li>Adding new members</li>
+                        <li>Deleting the group entirely</li>
+                    </ul></p>
+                        <h5>What if I no longer want to be a part of a group?</h5>
+                        <p>If you need to leave a group, click the group's <strong><em>Leave Group</em></strong> button from your <a href="/groups">My Groups</a> page.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                      Events
+                    </button>
+                  </h2>
+                  <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#how-to-guide">
+                    <div class="accordion-body">
+                        <h5>Creating</h5>
+                      <ol>
+                        <li>Navigate to the <a href="/create-event">Create New Event</a> page.</li>
+                        <li>Add in an <em>Event Name</em> -- this is what will display on users' dashboards and calendars.</li>
+                        <li><em>Description, Location, Date,</em> and <em>Time</em> are all optional fields here.</li>
+                        <li>Click the <strong><em>Create Event</em></strong> button when satisfied with the fields.</li>
+                      </ol>
+                      <h5>Updating</h5>
+                      <p>Newly created events will show up on your dashboard or on your <a href="/events">My Events</a> page. To update an event you are hosting:
+                    <ol>
+                        <li>Click the event you want to update</li>
+                        <li>Click the <strong><em>Update This Event</em></strong> button.
+                            <ul><li>ALternatively, you can delete the event entirely by clicking <strong><em>Delete This Event</em></strong></li></ul></li>
+                        <li>Make any necessary edits to your event using the form fields.
+                            <ul>
+                                <li>The best day and time for your group to hang out will be displayed here for reference.</li>
+                                <li>If you want to view the group's full availability, click <strong><em>View Full Availability</em></strong></li>
+                            </ul>
+                        </li>
+                        <li>Click the <strong><em>Make Changes</em></strong> button to save your edits.</li>
+                    </ul></ol></p>
+                        <h5>What if I can't make an event?</h5>
+                        <p>If you can't make an event you've been invited to, simply click <strong><em>Cannot Attend</em></strong> from your <a href="/events">My Events</a> page.</p>  
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <div class="about-row-3 justify-content-evenly align-items-center">
+            <div class="about-r3-c1 text-center">
+                <a id="linked-in" href="https://www.linkedin.com/in/desiree-morimoto-9470481b0/"><img id="self-photo" src="/static/img/self.png"></a>
+            </div>
+            <div class="about-r3-c2">
+                <h4>About the Developer</h4>
+                <p>Hi everyone! My name is Desiree and I'm a software engineer based in the Bay Area, CA. 
+                    This is my first project, so I'd love to hear what you think about the site.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-10 text-center">
+                <h4>Artist Credit</h4>
+                <p>Patricia Lee designed the When To Chill logo. Check out her portfolio <a href="https://patricialee.myportfolio.com">here</a>!</p>
+                <p>All other illustrations were created on blush using the <a href="https://blush.design/collections/8lWF2CQikq2jdHJF2as4/fresh-folk">Fresh Folk collection</a> by Leni Kaufmann.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

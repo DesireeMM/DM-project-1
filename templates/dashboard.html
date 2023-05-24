@@ -40,9 +40,11 @@
         </div>
         <div class="dash-row-1">
             <div class="dash-col-1">
-                <h2>My Events</h2>
+                <h2>Upcoming Events</h2>
                     {% for event in current_user.events %}
+                    {% if event.datetime and event.datetime > current_datetime %}
                     <div class="user-event-link"><a href="/events/{{event.event_id}}">{{event.name}}</a></div>
+                    {% endif %}
                     {% endfor %}
                     </ul>
             </div>

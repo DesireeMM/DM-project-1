@@ -44,7 +44,11 @@ def user_login():
 
     current_user = crud.get_user_by_email(user_email)
 
-    if current_user and argon2.verify(user_password, current_user.password):
+    if not current_user:
+        flash("Account does not exist. Please try again or Create New Account")
+        return redirect("/")
+
+    elif current_user and argon2.verify(user_password, current_user.password):
         session["user_id"] = current_user.user_id
         session["logged_in_email"] = current_user.email
         return redirect("/dashboard")
@@ -92,6 +96,7 @@ def view_dashboard():
     current_user_id = session.get("user_id")
     current_user = crud.get_user_by_id(current_user_id)
     availabilities = current_user.availabilities
+    current_datetime = datetime.now()
 
     unread_notifications = []
 
@@ -108,7 +113,8 @@ def view_dashboard():
     return render_template("dashboard.html",
                            current_user=current_user,
                            unread_notifications=reversed(unread_notifications),
-                           availabilities=availabilities)
+                           availabilities=availabilities,
+                           current_datetime=current_datetime)
 
 @app.route("/events")
 def view_events():
@@ -203,7 +209,13 @@ def leave_event():
 @app.route('/create-event')
 def create_event():
     """Show form for creating a new event"""
+
     current_user_id = session.get("user_id")
+    
+    if not current_user_id:
+        flash("You must be logged in to create events.")
+        return redirect("/")
+    
     poss_groups = crud.show_user_groups(current_user_id)
 
     return render_template("create_event.html",
@@ -296,7 +308,13 @@ def grab_personal_events():
 @app.route("/events-personal")
 def view_personal_calendar():
     """Display a user's personal event calendar"""
-
+    
+    current_user_id = session.get("user_id")
+    
+    if not current_user_id:
+        flash("You must be logged in to view your calendar.")
+        return redirect("/")
+    
     return render_template("calendar.html")
 
 @app.route("/update-event/<event_id>")
@@ -537,7 +555,11 @@ def get_group_availability():
 def create_group():
     """Show form for creating a new group"""
     current_user_id = session.get("user_id")
-
+    
+    if not current_user_id:
+        flash("You must be logged in to create a group.")
+        return redirect("/")
+    
     return render_template("create_group.html",
                            current_user_id=current_user_id)
 
@@ -841,7 +863,11 @@ def get_user_pic_data():
 
     return redirect("/settings")
 
+@app.route("/about")
+def about():
+    """Display information about the app"""
 
+    return render_template("about_us.html")
 
 @app.route("/logout")
 def user_logout():
