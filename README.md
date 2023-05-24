@@ -10,6 +10,7 @@ If you prefer, you can watch a brief demo video of my project here:
 - [Technologies Used](#technologiesused)
 - [APIs Used](#apisused)
 - [How To Use When To Chill](#howtoguide)
+- [Future Plans](#future)
 
 ## Project Information
 
@@ -111,3 +112,16 @@ If you can't make an event you've been invited to, simply click **_Cannot Attend
 ###### Changing Your Password
 You must enter your current password in order to change it to something else.  
    Please make sure your new password matches in both fields before clicking **_Change Password_**.
+
+## <a name="future"></a>Future Features
+###### Group Poll
+I would like to include a group poll option for specific events. Users could add poll options that the group can select to vote on an activity or location for a hangout. 
+I would display the poll results on a chart so users could easily interpret the results of their poll.
+
+###### Messaging
+Originally I had planned to use an API to send email notifications to users when an event had been scheduled, but ran into some security challenges. To make a similar feature, I plan to have a group message board where users can post messages to the group on each group's homepage. Additionally, I would like to allow attendees of an event to send notification messages that will show up on the event page.
+
+###### Event Invitations
+Currently, the forms are set up so that when you create an event, you automatically invite the entire group. I thought about other use cases, like a girls' night out or surprise party, and plan to include a checkbox for group members to be invited when creating an event. I would implement this by having a function to display this checklist when a group name option is selected from the dropdown menu on the create event form.
+
+I would also like to add a feature where event hosts could add additional invitees after the original event has been created, similar to the add group member functionality. This would come in handy if someone was accidentally missed on the checklist, or if someone who had previously said they could not attend became available.
