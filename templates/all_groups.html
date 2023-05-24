@@ -19,15 +19,16 @@
 
 {% block body %}
 <div class="background-div">
-    <br><br><br>
 <div class="container-fluid">
     <div class="all-groups-row-1">
         <div class="all-groups-col-1">
             <h1>My Groups</h1>
             {% for group in all_groups %}
             <div class="group-link"><a href="/groups/{{ group.group_id }}">{{ group.name }}</a></div>
+            {% if current_user.user_id != group.created_by %}
             <button type="button" class="leave-group btn" id= {{group.group_id}} value={{group.group_id}}>Leave this group</button>
             <br><br>
+            {% endif %}
             {% endfor %}
         </div>
         <div class="all-groups-col-2">

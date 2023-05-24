@@ -20,14 +20,13 @@
 {% block body %}
 <div class="background-div">
 <div class="container-fluid">
-    <br><br>
     <div class="events-row-1 align-items-start">
         <div class="events-col-1 details-div">
             <h1>Upcoming</h1>
             {% for event in all_events %}
                 {% if event.datetime and event.datetime > current_datetime %}
                 <p><a href="/events/{{ event.event_id }}">{{ event.name }}</a></p>
-                <button type="button" class="leave-event btn" id="{{event.event_id}}" value="{{event.event_id}}">Unable to attend</button>
+                <button type="button" class="leave-event btn" id="{{event.event_id}}" value="{{event.event_id}}">Cannot Attend</button>
                 <br><br><br>
                 {% endif %}
             {% endfor %}

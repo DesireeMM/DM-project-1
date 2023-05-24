@@ -53,6 +53,7 @@ input:focus {
 .flash-msg {
     color:#1D7874;
     text-align: center;
+    font-size: larger
 }
 
 .dash-row-1, .settings-row, .all-groups-row-1, .dash-row-2 {
@@ -195,10 +196,6 @@ a:hover {
     margin: auto;
     width: 75%;
     height: 75%
-}
-
-.fixed-top {
-    position: fixed;
 }
 
 #logo {
