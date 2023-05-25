@@ -2,6 +2,8 @@
 
 Learn more about the developer on [LinkedIn](https://www.linkedin.com/in/desiree-morimoto-9470481b0/)
 
+When To Chill has been deployed on AWS with Lightsail [here](http://35.164.146.74)
+
 If you prefer, you can watch a brief demo video of my project here:  
    [![When To Chill Demo Link](http://img.youtube.com/vi/ZNINJhmmvRE/0.jpg)](http://www.youtube.com/watch?v=ZNINJhmmvRE)
 
